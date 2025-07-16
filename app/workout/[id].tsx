@@ -1,10 +1,8 @@
 import ExerciseCard from '@/components/ExerciseCard';
-import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 const WorkoutDetails = () => {
-  const { id } = useLocalSearchParams();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Upper + Core</Text>
@@ -29,8 +27,8 @@ const styles = StyleSheet.create({
   },
   exerciseList: {
     display: 'flex',
-    gap: 10
-  }
+    gap: 10,
+  },
 });
 
 export default WorkoutDetails;
