@@ -1,28 +1,40 @@
+import Feather from '@expo/vector-icons/Feather';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-const ExerciseCard = () => {
+const ExerciseCard = ({ title, sets, onEditPress }) => {
   return (
     <View style={styles.container}>
       <View style={styles.exerciseDetails}>
-        <View style={styles.exerciseImage}/>
-        <Text style={styles.exerciseTitle}>Bicep Curl</Text>
+        <View style={styles.exerciseDetailsLeft}>
+          <View style={styles.exerciseImage} />
+          <Text style={styles.exerciseTitle}>{title}</Text>
+        </View>
+        <TouchableOpacity onPress={onEditPress}>
+          <Feather name='edit' color='black' size={20} />
+        </TouchableOpacity>
       </View>
       <View style={styles.reps}>
         <Text>SETS</Text>
         <Text>LBS</Text>
         <Text>REPS</Text>
       </View>
-      <View style={styles.reps}>
-        <Text>1</Text>
-        <Text>20</Text>
-        <Text>15</Text>
-      </View>
-      <View style={styles.reps}>
-        <Text>2</Text>
-        <Text>30</Text>
-        <Text>15</Text>
-      </View>
+      <FlatList
+        data={sets}
+        renderItem={({ item, index }) => (
+          <View key={index} style={styles.reps}>
+            <Text>{index + 1}</Text>
+            <Text>{String(item.lbs)}</Text>
+            <Text>{String(item.lbs)}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -45,18 +57,23 @@ const styles = StyleSheet.create({
   exerciseDetails: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  exerciseDetailsLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
   exerciseImage: {
     height: 40,
     width: 40,
     backgroundColor: 'red',
-    borderRadius: 20
+    borderRadius: 20,
   },
   exerciseTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-  }
+  },
 });
 
 export default ExerciseCard;

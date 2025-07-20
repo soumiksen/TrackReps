@@ -1,3 +1,4 @@
+import EditCard from '@/components/EditCard';
 import ExerciseCard from '@/components/ExerciseCard';
 import React from 'react';
 import {
@@ -9,13 +10,13 @@ import {
   View,
 } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Add = () => {
+const AddScreen = () => {
   const [exerciseTitle, setExerciseTitle] = React.useState('');
-  const [reps, setReps] = React.useState(0)
-  const [lbs, setLbs] = React.useState(0)
+  const [reps, setReps] = React.useState(0);
+  const [lbs, setLbs] = React.useState(0);
   const [exerciseList, setExerciseList] = React.useState([]);
+  const [showMenu, setShowMenu] = React.useState(false);
 
   const data = [
     { key: '1', value: 'Upper', disabled: true },
@@ -33,36 +34,31 @@ const Add = () => {
         placeholderTextColor={'black'}
       />
 
-      <SelectList
-        setSelected={(val) => setExerciseTitle(val)}
-        data={data}
-        save='value'
-        placeholder='Select Workout'
-      />
-      <TextInput value={reps} onChange={(text) => setReps(text)} placeholder='Enter Reps' style={styles.input} />
-      <TextInput value={lbs} onChange={(text) => setLbs(text)} placeholder='Enter Pounds' style={styles.input} />
->
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          setExerciseList([
-            {
-              title: exerciseTitle,
-              reps: reps,
-              lbs: lbs,
-              key: Math.random().toString(),
-            },
-            ...exerciseList,
-          ])
-        }
-      >
+      <TouchableOpacity style={styles.button} onPress={() => setShowMenu(true)}>
         <Text style={{ color: '#fff' }}>Add Workout</Text>
       </TouchableOpacity>
+
+      {showMenu && (
+        <EditCard
+          exerciseTitle={exerciseTitle}
+          setExerciseTitle={setExerciseTitle}
+          reps={reps}
+          setReps={setReps}
+          lbs={lbs}
+          setLbs={setLbs}
+          setExerciseList={setExerciseList}
+          exerciseList={exerciseList}
+          setShowMenu={setShowMenu}
+          data={data}
+        />
+      )}
 
       <View>
         <FlatList
           data={exerciseList}
-          renderItem={({ item }) => <ExerciseCard />}
+          renderItem={({ item }) => (
+            <ExerciseCard title={item.title} sets={item.sets} onEditPress={() => setShowMenu(true)}/>
+          )}
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         />
       </View>
@@ -81,6 +77,7 @@ const styles = StyleSheet.create({
     padding: 16,
     display: 'flex',
     gap: 16,
+    flex: 1,
   },
   button: {
     alignItems: 'center',
@@ -88,6 +85,20 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
   },
+  menu: {
+    position: 'absolute',
+    bottom: 30,
+    left: 0,
+    right: 0,
+    display: 'flex',
+    gap: 16,
+    padding: 16,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 8,
+    zIndex: 1000,
+    borderBottomColor: 'transparent',
+  },
 });
 
-export default Add;
+export default AddScreen;

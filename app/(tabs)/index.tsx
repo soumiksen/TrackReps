@@ -5,7 +5,7 @@ import { useNavigation } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Index() {
+export default function HomeScreen() {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
