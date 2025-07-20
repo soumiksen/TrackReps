@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  Button,
+  FlatList,
   StyleSheet,
   Text,
   TextInput,
@@ -11,15 +13,37 @@ import { SelectList } from 'react-native-dropdown-select-list';
 const EditCard = ({
   exerciseTitle,
   setExerciseTitle,
-  reps,
-  setReps,
-  lbs,
-  setLbs,
   setExerciseList,
   exerciseList,
   setShowMenu,
-  data
+  data,
+  sets,
+  setSets,
 }: any) => {
+  const handleUpdateValue = (index, field, value) => {
+    const updatedSets = [...sets];
+    updatedSets[index][field] = value;
+    setSets(updatedSets);
+  };
+
+  const renderItem = ({ item, index }) => (
+    <View style={styles.tableInput}>
+      <Text>{index + 1}</Text>
+      <TextInput
+        value={item.reps}
+        onChangeText={(text) => handleUpdateValue(index, 'reps', text)}
+        placeholder='Enter Reps'
+        style={styles.input}
+      />
+      <TextInput
+        value={item.lbs}
+        onChangeText={(text) => handleUpdateValue(index, 'lbs', text)}
+        placeholder='Enter Pounds'
+        style={styles.input}
+      />
+    </View>
+  );
+
   return (
     <View style={styles.menu}>
       <SelectList
@@ -28,36 +52,34 @@ const EditCard = ({
         save='value'
         placeholder='Select Exercise'
       />
-      <TextInput
-        value={reps}
-        onChangeText={(text) => setReps(text)}
-        placeholder='Enter Reps'
-        style={styles.input}
-      />
-      <TextInput
-        value={lbs}
-        onChangeText={(text) => setLbs(text)}
-        placeholder='Enter Pounds'
-        style={styles.input}
+
+      <FlatList data={sets} renderItem={renderItem} />
+
+      <Button
+        title='Add another set'
+        onPress={() =>
+          setSets((prev) => [
+            ...prev,
+            { set: prev.length + 1, reps: '', lbs: '' },
+          ])
+        }
       />
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          console.log(lbs, reps);
           setExerciseList([
             ...exerciseList,
             {
               title: exerciseTitle,
-              sets: [{ set: 1, lbs: lbs, reps: reps }],
+              sets: sets,
             },
           ]);
-          setReps(0);
-          setLbs(0);
+          setSets([{ set: 1, reps: '', lbs: '' }]);
           setShowMenu(false);
         }}
       >
-        <Text style={{ color: '#fff' }}>Add Workout</Text>
+        <Text style={{ color: '#fff' }}>Add Exercise</Text>
       </TouchableOpacity>
     </View>
   );
@@ -95,6 +117,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     zIndex: 1000,
     borderBottomColor: 'transparent',
+  },
+  tableInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

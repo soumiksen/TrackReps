@@ -9,13 +9,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SelectList } from 'react-native-dropdown-select-list';
 
 const AddScreen = () => {
   const [exerciseTitle, setExerciseTitle] = React.useState('');
   const [reps, setReps] = React.useState(0);
   const [lbs, setLbs] = React.useState(0);
   const [exerciseList, setExerciseList] = React.useState([]);
+  const [sets, setSets] = React.useState([{ set: 1, reps: '', lbs: '' }]);
   const [showMenu, setShowMenu] = React.useState(false);
 
   const data = [
@@ -42,12 +42,10 @@ const AddScreen = () => {
         <EditCard
           exerciseTitle={exerciseTitle}
           setExerciseTitle={setExerciseTitle}
-          reps={reps}
-          setReps={setReps}
-          lbs={lbs}
-          setLbs={setLbs}
-          setExerciseList={setExerciseList}
           exerciseList={exerciseList}
+          setExerciseList={setExerciseList}
+          sets={sets}
+          setSets={setSets}
           setShowMenu={setShowMenu}
           data={data}
         />
@@ -57,7 +55,11 @@ const AddScreen = () => {
         <FlatList
           data={exerciseList}
           renderItem={({ item }) => (
-            <ExerciseCard title={item.title} sets={item.sets} onEditPress={() => setShowMenu(true)}/>
+            <ExerciseCard
+              title={item.title}
+              sets={item.sets}
+              onEditPress={() => setShowMenu(true)}
+            />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         />
