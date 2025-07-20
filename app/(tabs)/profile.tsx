@@ -1,14 +1,12 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import EditableTable from '@/components/EditableTable'
+import React from 'react';
+import { Text, View } from 'react-native';
 
 const ProfileScreen = () => {
   return (
     <View>
       <Text>Profile</Text>
-      <EditableTable/>
     </View>
-  )
-}
+  );
+};
 
-export default ProfileScreen
+export default ProfileScreen;

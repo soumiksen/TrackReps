@@ -1,6 +1,6 @@
 import EditCard from '@/components/EditCard';
 import ExerciseCard from '@/components/ExerciseCard';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 
 const AddScreen = () => {
-  const [exerciseTitle, setExerciseTitle] = React.useState('');
-  const [reps, setReps] = React.useState(0);
-  const [lbs, setLbs] = React.useState(0);
-  const [exerciseList, setExerciseList] = React.useState([]);
-  const [sets, setSets] = React.useState([{ set: 1, reps: '', lbs: '' }]);
-  const [showMenu, setShowMenu] = React.useState(false);
+  const [exerciseTitle, setExerciseTitle] = useState('');
+  const [exerciseList, setExerciseList] = useState([]);
+  const [sets, setSets] = useState([{ set: 1, reps: '', lbs: '' }]);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const [exerciseToEdit, setExerciseToEdit] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
 
   const data = [
     { key: '1', value: 'Upper', disabled: true },
@@ -26,6 +27,15 @@ const AddScreen = () => {
     { key: '5', value: 'Leg Extension' },
     { key: '6', value: 'Calf Extension' },
   ];
+
+  const handleEditPress = (exercise, index) => {
+    setExerciseTitle(exercise.title);
+    setSets(exercise.sets);
+    setExerciseToEdit(exercise);
+    setEditIndex(index);
+    setShowMenu(true);
+  }; 
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -48,17 +58,21 @@ const AddScreen = () => {
           setSets={setSets}
           setShowMenu={setShowMenu}
           data={data}
+          mode={editIndex !== null ? 'edit' : 'add'}
+          setEditIndex={setEditIndex}
+          exerciseToEdit={exerciseToEdit}
+          indexToEdit={editIndex}
         />
       )}
 
       <View>
         <FlatList
           data={exerciseList}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <ExerciseCard
               title={item.title}
               sets={item.sets}
-              onEditPress={() => setShowMenu(true)}
+              onEditPress={() => handleEditPress(item, index)}
             />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}

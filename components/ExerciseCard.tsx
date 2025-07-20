@@ -31,7 +31,7 @@ const ExerciseCard = ({ title, sets, onEditPress }) => {
           <View key={index} style={styles.reps}>
             <Text>{index + 1}</Text>
             <Text>{String(item.lbs)}</Text>
-            <Text>{String(item.lbs)}</Text>
+            <Text>{String(item.reps)}</Text>
           </View>
         )}
       />

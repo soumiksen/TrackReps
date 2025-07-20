@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   FlatList,
@@ -19,6 +19,10 @@ const EditCard = ({
   data,
   sets,
   setSets,
+  mode = 'add',
+  exerciseToEdit,
+  indexToEdit,
+  setEditIndex,
 }: any) => {
   const handleUpdateValue = (index, field, value) => {
     const updatedSets = [...sets];
@@ -26,19 +30,26 @@ const EditCard = ({
     setSets(updatedSets);
   };
 
+  useEffect(() => {
+    if (mode === 'edit' && exerciseToEdit) {
+      setExerciseTitle(exerciseToEdit.title);
+      setSets(exerciseToEdit.sets);
+    }
+  }, [mode, exerciseToEdit]);
+
   const renderItem = ({ item, index }) => (
     <View style={styles.tableInput}>
       <Text>{index + 1}</Text>
       <TextInput
-        value={item.reps}
-        onChangeText={(text) => handleUpdateValue(index, 'reps', text)}
-        placeholder='Enter Reps'
+        value={String(item.lbs)}
+        onChangeText={(text) => handleUpdateValue(index, 'lbs', text)}
+        placeholder='Enter Pounds'
         style={styles.input}
       />
       <TextInput
-        value={item.lbs}
-        onChangeText={(text) => handleUpdateValue(index, 'lbs', text)}
-        placeholder='Enter Pounds'
+        value={String(item.reps)}
+        onChangeText={(text) => handleUpdateValue(index, 'reps', text)}
+        placeholder='Enter Reps'
         style={styles.input}
       />
     </View>
@@ -51,6 +62,7 @@ const EditCard = ({
         data={data}
         save='value'
         placeholder='Select Exercise'
+        defaultOption={{ key: 'custom', value: exerciseTitle }}
       />
 
       <FlatList data={sets} renderItem={renderItem} />
@@ -68,18 +80,28 @@ const EditCard = ({
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          setExerciseList([
-            ...exerciseList,
-            {
+          if (mode === 'edit' && indexToEdit !== undefined) {
+            const updatedList = [...exerciseList];
+            updatedList[indexToEdit] = {
               title: exerciseTitle,
               sets: sets,
-            },
-          ]);
+            };
+            setExerciseList(updatedList);
+          } else {
+            setExerciseList([
+              ...exerciseList,
+              {
+                title: exerciseTitle,
+                sets: sets,
+              },
+            ]);
+          }
           setSets([{ set: 1, reps: '', lbs: '' }]);
           setShowMenu(false);
+          setEditIndex(null);
         }}
       >
-        <Text style={{ color: '#fff' }}>Add Exercise</Text>
+        <Text style={{ color: '#fff' }}>{mode == 'add' ? "Add Exercise" : "Update Exercise"}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -87,10 +109,7 @@ const EditCard = ({
 
 const styles = StyleSheet.create({
   input: {
-    borderColor: 'black',
-    borderWidth: 1,
     padding: 15,
-    borderRadius: 8,
   },
   container: {
     padding: 16,
@@ -117,6 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     zIndex: 1000,
     borderBottomColor: 'transparent',
+    backgroundColor: 'white',
   },
   tableInput: {
     flexDirection: 'row',
