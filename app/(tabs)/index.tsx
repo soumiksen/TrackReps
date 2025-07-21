@@ -1,8 +1,9 @@
+import Button from '@/components/Button';
 import StreakCard from '@/components/StreakCard';
 import WorkoutSlider from '@/components/WorkoutSlider';
 import DataList from '@/services/data';
 import { useNavigation } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
@@ -18,12 +19,9 @@ export default function HomeScreen() {
         <View>
           <WorkoutSlider data={DataList} />
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('workout/add')}
-          style={styles.addButton}
-        >
-          <Text style={styles.textColor}>Add Workout</Text>
-        </TouchableOpacity>
+        <Button onPress={() => navigation.navigate('workout/add')}>
+          Add Workout
+        </Button>
       </View>
     </SafeAreaView>
   );

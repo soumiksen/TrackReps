@@ -1,14 +1,8 @@
+import Button from '@/components/Button';
 import EditCard from '@/components/EditCard';
 import ExerciseCard from '@/components/ExerciseCard';
 import React, { useState } from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, StyleSheet, TextInput, View } from 'react-native';
 
 const AddScreen = () => {
   const [exerciseTitle, setExerciseTitle] = useState('');
@@ -34,7 +28,7 @@ const AddScreen = () => {
     setExerciseToEdit(exercise);
     setEditIndex(index);
     setShowMenu(true);
-  }; 
+  };
 
   return (
     <View style={styles.container}>
@@ -44,9 +38,7 @@ const AddScreen = () => {
         placeholderTextColor={'black'}
       />
 
-      <TouchableOpacity style={styles.button} onPress={() => setShowMenu(true)}>
-        <Text style={{ color: '#fff' }}>Add Workout</Text>
-      </TouchableOpacity>
+      <Button onPress={() => setShowMenu(true)}>Add Workout</Button>
 
       {showMenu && (
         <EditCard
@@ -94,12 +86,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 16,
     flex: 1,
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#199EFF',
-    padding: 12,
-    borderRadius: 8,
   },
   menu: {
     position: 'absolute',

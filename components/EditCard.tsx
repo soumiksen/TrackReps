@@ -1,13 +1,6 @@
+import Button from '@/components/Button';
 import React, { useEffect } from 'react';
-import {
-  Button,
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 const EditCard = ({
@@ -28,6 +21,32 @@ const EditCard = ({
     const updatedSets = [...sets];
     updatedSets[index][field] = value;
     setSets(updatedSets);
+  };
+
+  const handleAddWorkout = () => {
+    if (mode === 'edit' && indexToEdit !== undefined) {
+      const updatedList = [...exerciseList];
+      updatedList[indexToEdit] = {
+        title: exerciseTitle,
+        sets: sets,
+      };
+      setExerciseList(updatedList);
+    } else {
+      setExerciseList([
+        ...exerciseList,
+        {
+          title: exerciseTitle,
+          sets: sets,
+        },
+      ]);
+    }
+    setSets([{ set: 1, reps: '', lbs: '' }]);
+    setShowMenu(false);
+    setEditIndex(null);
+  };
+
+  const handleAddSet = () => {
+    setSets((prev) => [...prev, { set: prev.length + 1, reps: '', lbs: '' }]);
   };
 
   useEffect(() => {
@@ -58,7 +77,7 @@ const EditCard = ({
   return (
     <View style={styles.menu}>
       <SelectList
-        setSelected={(val) => setExerciseTitle(val)}
+        setSelected={setExerciseTitle}
         data={data}
         save='value'
         placeholder='Select Exercise'
@@ -67,42 +86,13 @@ const EditCard = ({
 
       <FlatList data={sets} renderItem={renderItem} />
 
-      <Button
-        title='Add another set'
-        onPress={() =>
-          setSets((prev) => [
-            ...prev,
-            { set: prev.length + 1, reps: '', lbs: '' },
-          ])
-        }
-      />
+      <Button onPress={handleAddSet} variant='outlined'>
+        Add another set
+      </Button>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          if (mode === 'edit' && indexToEdit !== undefined) {
-            const updatedList = [...exerciseList];
-            updatedList[indexToEdit] = {
-              title: exerciseTitle,
-              sets: sets,
-            };
-            setExerciseList(updatedList);
-          } else {
-            setExerciseList([
-              ...exerciseList,
-              {
-                title: exerciseTitle,
-                sets: sets,
-              },
-            ]);
-          }
-          setSets([{ set: 1, reps: '', lbs: '' }]);
-          setShowMenu(false);
-          setEditIndex(null);
-        }}
-      >
-        <Text style={{ color: '#fff' }}>{mode == 'add' ? "Add Exercise" : "Update Exercise"}</Text>
-      </TouchableOpacity>
+      <Button onPress={handleAddWorkout}>
+        {mode == 'add' ? 'Add Exercise' : 'Update Exercise'}
+      </Button>
     </View>
   );
 };
@@ -116,12 +106,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 16,
     flex: 1,
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#199EFF',
-    padding: 12,
-    borderRadius: 8,
   },
   menu: {
     position: 'absolute',

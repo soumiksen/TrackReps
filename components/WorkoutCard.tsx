@@ -1,9 +1,10 @@
 import { useNavigation } from 'expo-router';
-import React, { use } from 'react';
-import { StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Button from './Button';
 
 const WorkoutCard = ({ title, time, volume, list }) => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -26,9 +27,11 @@ const WorkoutCard = ({ title, time, volume, list }) => {
           </View>
         ))}
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('workout/[id]', { id: title })}>
-        <Text style={styles.btn}>View Details</Text>
-      </TouchableOpacity>
+      <Button
+        onPress={() => navigation.navigate('workout/[id]', { id: title })}
+      >
+        View Details
+      </Button>
     </View>
   );
 };
@@ -49,16 +52,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  textColor: {
-    
-  },
-  btn: {
-    textAlign: 'center',
-    color: '#ffff',
-    backgroundColor: '#199EFF',
-    borderRadius: 5,
-    padding: 5
-  }
 });
 
 export default WorkoutCard;
