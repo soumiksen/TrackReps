@@ -2,6 +2,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import styles from './StreakCard.styles';
 
 const StreakCard = () => {
   return (
@@ -39,25 +40,5 @@ const StreakCard = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  StreakCard: {
-    backgroundColor: '#199EFF',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  streakContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 16,
-  },
-  streak: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 4,
-  },
-});
 
 export default StreakCard;

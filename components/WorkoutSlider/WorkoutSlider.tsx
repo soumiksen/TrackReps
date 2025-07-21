@@ -1,8 +1,9 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import WorkoutCard from './WorkoutCard';
+import WorkoutCard from '../WorkoutCard/WorkoutCard';
+import styles from './WorkoutSlider.styles';
 
-const CardSlider = ({ data }) => {
+const CardSlider = ({ data }: any) => {
   return (
     <View style={styles.container}>
       <FlatList
@@ -28,11 +29,5 @@ const CardSlider = ({ data }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-  },
-  content: {},
-});
 
 export default CardSlider;

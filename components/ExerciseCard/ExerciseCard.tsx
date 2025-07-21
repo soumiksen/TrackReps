@@ -1,14 +1,10 @@
 import Feather from '@expo/vector-icons/Feather';
 import React from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import styles from './ExerciseCard.styles';
+import { ExerciseCardProps } from './ExerciseCard.types';
 
-const ExerciseCard = ({ title, sets, onEditPress }) => {
+const ExerciseCard = ({ title, sets, onEditPress }: ExerciseCardProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.exerciseDetails}>
@@ -38,42 +34,5 @@ const ExerciseCard = ({ title, sets, onEditPress }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  reps: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    borderColor: '#199EFF',
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 8,
-  },
-  exerciseDetails: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  exerciseDetailsLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  exerciseImage: {
-    height: 40,
-    width: 40,
-    backgroundColor: 'red',
-    borderRadius: 20,
-  },
-  exerciseTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
 
 export default ExerciseCard;

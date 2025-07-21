@@ -1,7 +1,9 @@
-import Button from '@/components/Button';
+import Button from '@/components/Button/Button';
 import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { EditCardProps } from './EditCard.types';
+import styles from './EditCard.styles';
 
 const EditCard = ({
   exerciseTitle,
@@ -16,9 +18,9 @@ const EditCard = ({
   exerciseToEdit,
   indexToEdit,
   setEditIndex,
-}: any) => {
-  const handleUpdateValue = (index, field, value) => {
-    const updatedSets = [...sets];
+}: EditCardProps) => {
+  const handleUpdateValue = (index: number, field: string, value: string) => {
+    const updatedSets: any = [...sets];
     updatedSets[index][field] = value;
     setSets(updatedSets);
   };
@@ -42,11 +44,16 @@ const EditCard = ({
     }
     setSets([{ set: 1, reps: '', lbs: '' }]);
     setShowMenu(false);
-    setEditIndex(null);
+    if (setEditIndex) {
+      setEditIndex(null);
+    }
   };
 
   const handleAddSet = () => {
-    setSets((prev) => [...prev, { set: prev.length + 1, reps: '', lbs: '' }]);
+    setSets((prev: { set: number; reps: string; lbs: string }[]) => [
+      ...prev,
+      { set: prev.length + 1, reps: '', lbs: '' },
+    ]);
   };
 
   useEffect(() => {
@@ -56,7 +63,7 @@ const EditCard = ({
     }
   }, [mode, exerciseToEdit]);
 
-  const renderItem = ({ item, index }) => (
+  const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View style={styles.tableInput}>
       <Text>{index + 1}</Text>
       <TextInput
@@ -96,37 +103,5 @@ const EditCard = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    padding: 15,
-  },
-  container: {
-    padding: 16,
-    display: 'flex',
-    gap: 16,
-    flex: 1,
-  },
-  menu: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-    display: 'flex',
-    gap: 16,
-    padding: 16,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 8,
-    zIndex: 1000,
-    borderBottomColor: 'transparent',
-    backgroundColor: 'white',
-  },
-  tableInput: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-});
 
 export default EditCard;
