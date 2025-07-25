@@ -1,11 +1,12 @@
+import SignInScreen from '@/screens/SignInScreen/SignInScreen';
+import SignUpScreen from '@/screens/SignUpScreen/SignUpScreen';
 import React from 'react';
-import { Text, View } from 'react-native';
 
 const ProfileScreen = () => {
   return (
-    <View>
-      <Text>Profile</Text>
-    </View>
+    <>
+      <SignUpScreen />
+    </>
   );
 };
 

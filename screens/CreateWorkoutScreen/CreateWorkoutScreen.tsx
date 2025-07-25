@@ -1,8 +1,9 @@
 import Button from '@/components/Button/Button';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
+import Input from '@/components/Input/Input';
 import React, { useState } from 'react';
-import { FlatList, TextInput, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import styles from './CreateWorkoutScreen.styles';
 
 const CreateWorkoutScreen = () => {
@@ -33,11 +34,7 @@ const CreateWorkoutScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder='Workout Title'
-        placeholderTextColor={'black'}
-      />
+      <Input placeholder='Workout Title' />
 
       <Button onPress={() => setShowMenu(true)}>Add Workout</Button>
 

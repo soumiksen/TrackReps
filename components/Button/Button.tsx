@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { ButtonProps } from './Button.types';
+import { Text, TouchableOpacity } from 'react-native';
 import styles from './Button.styles';
+import { ButtonProps } from './Button.types';
 
 const Button = ({ onPress, variant = 'primary', children }: ButtonProps) => {
   return (
@@ -17,6 +17,5 @@ const Button = ({ onPress, variant = 'primary', children }: ButtonProps) => {
     </TouchableOpacity>
   );
 };
-
 
 export default Button;
