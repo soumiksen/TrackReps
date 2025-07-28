@@ -1,7 +1,10 @@
 import Button from '@/components/Button/Button';
 import FormInput from '@/components/FormInput/FormInput';
+import { AuthContext } from '@/context/AuthContext';
+import { signIn } from '@/services/authentication';
+import { Link } from 'expo-router';
 import { Formik } from 'formik';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Yup from 'yup';
@@ -21,7 +24,7 @@ const SignInScreen = () => {
       <Formik
         initialValues={{ email: '', password: '' }}
         onSubmit={(values) => {
-          console.log(values);
+          signIn(values.email, values.password);
         }}
         validationSchema={SignInSchema}
       >
@@ -41,7 +44,6 @@ const SignInScreen = () => {
               onBlur={() => {
                 handleBlur('email');
               }}
-              
               errorType={errors.email}
               touchedType={touched.email}
             />
@@ -52,7 +54,6 @@ const SignInScreen = () => {
               onBlur={() => {
                 handleBlur('password');
               }}
-              
               errorType={errors.password}
               touchedType={touched.password}
             />
@@ -60,6 +61,10 @@ const SignInScreen = () => {
           </View>
         )}
       </Formik>
+      <View style={styles.signUpLink}>
+        <Text>Don't have an account?</Text>
+        <Link href='/auth/signup'> Sign up.</Link>
+      </View>
     </SafeAreaView>
   );
 };

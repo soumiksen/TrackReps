@@ -1,5 +1,7 @@
 import Button from '@/components/Button/Button';
 import FormInput from '@/components/FormInput/FormInput';
+import { signUp } from '@/services/authentication';
+import { Link } from 'expo-router';
 import { Formik } from 'formik';
 import React from 'react';
 import { Text, View } from 'react-native';
@@ -27,7 +29,8 @@ const SignUpScreen = () => {
           confirmPassword: '',
         }}
         onSubmit={(values) => {
-          console.log(values);
+          const res = signUp(values.email, values.password);
+          console.log({ res });
         }}
         validationSchema={SignUpSchema}
       >
@@ -94,6 +97,10 @@ const SignUpScreen = () => {
           </View>
         )}
       </Formik>
+      <View style={styles.signInLink}>
+        <Text>Already have an account?</Text>
+        <Link href='/auth/signin'> Sign in.</Link>
+      </View>
     </SafeAreaView>
   );
 };
