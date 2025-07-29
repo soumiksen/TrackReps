@@ -3,4 +3,5 @@ export type WorkoutCardProps = {
   time: string;
   volume: string;
   list: string[];
+  id: string;
 };

@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 16,
     flex: 1,
+    // justifyContent: 'space-between',
   },
   menu: {
     position: 'absolute',
@@ -26,6 +27,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     zIndex: 1000,
     borderBottomColor: 'transparent',
+  },
+  bottomBtn: {
+    marginBottom: 30,
+    
   },
 });
 export default styles;

@@ -29,7 +29,7 @@ const SignUpScreen = () => {
           confirmPassword: '',
         }}
         onSubmit={(values) => {
-          const res = signUp(values.email, values.password);
+          const res = signUp(values.firstName, values.lastName, values.email, values.password);
           console.log({ res });
         }}
         validationSchema={SignUpSchema}

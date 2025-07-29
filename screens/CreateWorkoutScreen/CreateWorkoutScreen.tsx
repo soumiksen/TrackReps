@@ -2,18 +2,23 @@ import Button from '@/components/Button/Button';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import Input from '@/components/Input/Input';
-import React, { useState } from 'react';
+import { AuthContext } from '@/context/AuthContext';
+import { addWorkout } from '@/services/workouts';
+import React, { useContext, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import styles from './CreateWorkoutScreen.styles';
 
 const CreateWorkoutScreen = () => {
   const [exerciseTitle, setExerciseTitle] = useState('');
+  const [workoutTitle, setWorkoutTitle] = useState('');
   const [exerciseList, setExerciseList] = useState<any[]>([]);
   const [sets, setSets] = useState([{ set: 1, reps: '', lbs: '' }]);
   const [showMenu, setShowMenu] = useState(false);
 
   const [exerciseToEdit, setExerciseToEdit] = useState<any>(null);
   const [editIndex, setEditIndex] = useState<any>(null);
+
+  const { uid } = useContext(AuthContext);
 
   const data = [
     { key: '1', value: 'Upper', disabled: true },
@@ -34,40 +39,57 @@ const CreateWorkoutScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Input placeholder='Workout Title' />
-
-      <Button onPress={() => setShowMenu(true)}>Add Workout</Button>
-
-      {showMenu && (
-        <EditCard
-          exerciseTitle={exerciseTitle}
-          setExerciseTitle={setExerciseTitle}
-          exerciseList={exerciseList}
-          setExerciseList={setExerciseList}
-          sets={sets}
-          setSets={setSets}
-          setShowMenu={setShowMenu}
-          data={data}
-          mode={editIndex !== null ? 'edit' : 'add'}
-          setEditIndex={setEditIndex}
-          exerciseToEdit={exerciseToEdit}
-          indexToEdit={editIndex}
+        <Input
+          placeholder='Workout Title'
+          value={workoutTitle}
+          onChangeText={setWorkoutTitle}
         />
-      )}
 
-      <View>
-        <FlatList
-          data={exerciseList}
-          renderItem={({ item, index }) => (
-            <ExerciseCard
-              title={item.title}
-              sets={item.sets}
-              onEditPress={() => handleEditPress(item, index)}
-            />
-          )}
-          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-        />
-      </View>
+        <Button onPress={() => setShowMenu(true)}>Add Exercises</Button>
+
+        {showMenu && (
+          <EditCard
+            exerciseTitle={exerciseTitle}
+            setExerciseTitle={setExerciseTitle}
+            exerciseList={exerciseList}
+            setExerciseList={setExerciseList}
+            sets={sets}
+            setSets={setSets}
+            setShowMenu={setShowMenu}
+            data={data}
+            mode={editIndex !== null ? 'edit' : 'add'}
+            setEditIndex={setEditIndex}
+            exerciseToEdit={exerciseToEdit}
+            indexToEdit={editIndex}
+          />
+        )}
+
+        <View>
+          <FlatList
+            data={exerciseList}
+            renderItem={({ item, index }) => (
+              <ExerciseCard
+                title={item.title}
+                sets={item.sets}
+                onEditPress={() => handleEditPress(item, index)}
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          />
+        </View>
+        <View style={styles.bottomBtn}>
+          <Button
+            onPress={() =>
+              addWorkout(uid, {
+                name: workoutTitle,
+                exercises: exerciseList,
+              })
+            }
+          >
+            Add Workout
+          </Button>
+        </View>
+        
     </View>
   );
 };

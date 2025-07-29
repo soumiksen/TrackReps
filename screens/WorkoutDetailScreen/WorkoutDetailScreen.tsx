@@ -1,26 +1,28 @@
+import Button from '@/components/Button/Button';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
-import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { AuthContext } from '@/context/AuthContext';
+import { deleteWorkout, getWorkoutDetail } from '@/services/workouts';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, Text, View } from 'react-native';
 import styles from './WorkoutDetailScreen.styles';
 
 const WorkoutDetailsScreen = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [exerciseTitle, setExerciseTitle] = useState('');
-  const [exerciseList, setExerciseList] = useState([
-    {
-      title: 'Bicep Curl',
-      sets: [{ set: 1, lbs: 20, reps: 15 }],
-    },
-    {
-      title: 'Tricep Extension',
-      sets: [{ set: 1, lbs: 25, reps: 12 }],
-    },
-  ]);
+  const [exerciseList, setExerciseList] = useState();
   const [sets, setSets] = useState([{ set: 1, reps: '', lbs: '' }]);
 
   const [exerciseToEdit, setExerciseToEdit] = useState<any>(null);
   const [editIndex, setEditIndex] = useState<any>(null);
+
+  const { id } = useLocalSearchParams();
+  const { uid } = useContext(AuthContext);
+
+  const [title, setTitle] = useState('');
+
+  const navigation = useNavigation<any>();
 
   const handleEditPress = (exercise: any, index: any) => {
     setExerciseToEdit(exercise);
@@ -39,9 +41,30 @@ const WorkoutDetailsScreen = () => {
     { key: '6', value: 'Calf Extension' },
   ];
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getWorkoutDetail(uid, id);
+        console.log(res);
+
+        setTitle(res.name);
+        const formattedData: any = res.exercises.map((item: any) => ({
+          title: item.title,
+          sets: item.sets,
+          id: item.id,
+        }));
+
+        setExerciseList(formattedData);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    if (uid) fetchData();
+  }, [uid]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Upper + Core</Text>
+      <Text style={styles.title}>{title}</Text>
       <View style={styles.exerciseList}>
         <FlatList
           data={exerciseList}
@@ -64,7 +87,6 @@ const WorkoutDetailsScreen = () => {
           exerciseTitle={exerciseTitle}
           setExerciseTitle={setExerciseTitle}
           exerciseList={exerciseList}
-          setExerciseList={setExerciseList}
           sets={sets}
           setSets={setSets}
           setShowMenu={setShowMenu}
@@ -75,10 +97,16 @@ const WorkoutDetailsScreen = () => {
           indexToEdit={editIndex}
         />
       )}
+      <Button
+        onPress={async () => {
+          const res = await deleteWorkout(uid, id);
+          navigation.navigate('(tabs)')
+        }}
+      >
+        Delete Workout
+      </Button>
     </View>
   );
 };
-
-
 
 export default WorkoutDetailsScreen;

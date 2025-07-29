@@ -4,10 +4,14 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  uid: string;
+  firstName: string;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
+  uid: '',
+  firstName: '',
 });
 
 type AuthProviderProps = {
@@ -16,12 +20,15 @@ type AuthProviderProps = {
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [uid, setUid] = useState('');
+  const [firstName, setFirstName] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsAuthenticated(!!user);
       if (user) {
-        console.log('User is logged in:', user);
+        setUid(user.uid);
+        setFirstName(user.displayName ? user.displayName : '');
       } else {
         console.log('User is logged out');
       }
@@ -31,7 +38,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, uid, firstName }}>
       {children}
     </AuthContext.Provider>
   );

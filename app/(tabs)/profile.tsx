@@ -1,13 +1,8 @@
-import SignInScreen from '@/screens/SignInScreen/SignInScreen';
-import SignUpScreen from '@/screens/SignUpScreen/SignUpScreen';
+import ProfileScreen from '@/screens/ProfileScreen/ProfileScreen';
 import React from 'react';
 
-const ProfileScreen = () => {
-  return (
-    <>
-      <SignUpScreen />
-    </>
-  );
+const Profile = () => {
+  return <ProfileScreen />;
 };
 
-export default ProfileScreen;
+export default Profile;

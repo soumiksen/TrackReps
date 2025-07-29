@@ -17,9 +17,10 @@ const CardSlider = ({ data }: any) => {
         renderItem={({ item }) => (
           <WorkoutCard
             title={item.title}
-            time={item.time}
-            volume={item.volume}
+            time="1h 50m"
+            volume="1000lbs"
             list={item.list}
+            id={item.id}
           />
         )}
         contentContainerStyle={styles.content}

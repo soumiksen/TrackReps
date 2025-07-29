@@ -1,14 +1,12 @@
 import { useNavigation } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Button from '../Button/Button';
-import { WorkoutCardProps } from './WorkoutCard.types';
 import styles from './WorkoutCard.styles';
+import { WorkoutCardProps } from './WorkoutCard.types';
 
-
-const WorkoutCard = ({ title, time, volume, list }: WorkoutCardProps) => {
+const WorkoutCard = ({ title, time, volume, list, id }: WorkoutCardProps) => {
   const navigation = useNavigation<any>();
-
   return (
     <View style={styles.container}>
       <Text style={styles.CardHeader}>{title}</Text>
@@ -24,21 +22,17 @@ const WorkoutCard = ({ title, time, volume, list }: WorkoutCardProps) => {
       </View>
 
       <View>
-        {list.map((item, index) => (
+        {list.map((item: any, index) => (
           <View key={index}>
-            <Text>{item}</Text>
+            <Text>{item.title}</Text>
           </View>
         ))}
       </View>
-      <Button
-        onPress={() => navigation.navigate('workout/[id]', { id: title })}
-      >
+      <Button onPress={() => navigation.navigate('workout/[id]', { id })}>
         View Details
       </Button>
     </View>
   );
 };
-
-
 
 export default WorkoutCard;
