@@ -1,9 +1,9 @@
 import Button from '@/components/Button/Button';
 import React, { useEffect } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Text, TextInput, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { EditCardProps } from './EditCard.types';
 import styles from './EditCard.styles';
+import { EditCardProps } from './EditCard.types';
 
 const EditCard = ({
   exerciseTitle,
@@ -18,6 +18,7 @@ const EditCard = ({
   exerciseToEdit,
   indexToEdit,
   setEditIndex,
+  variant,
 }: EditCardProps) => {
   const handleUpdateValue = (index: number, field: string, value: string) => {
     const updatedSets: any = [...sets];
@@ -50,10 +51,17 @@ const EditCard = ({
   };
 
   const handleAddSet = () => {
-    setSets((prev: { set: number; reps: string; lbs: string }[]) => [
-      ...prev,
-      { set: prev.length + 1, reps: '', lbs: '' },
-    ]);
+    if (variant == 'routine') {
+      setSets((prev: { set: number; reps: string; lbs: string }[]) => [
+        ...prev,
+        { set: prev.length + 1, reps: '', lbs: '' },
+      ]);
+    } else {
+      setSets((prev: { set: number; reps: string; lbs: string }[]) => [
+        ...prev,
+        { set: prev.length + 1, reps: '', lbs: '', completed: false },
+      ]);
+    }
   };
 
   useEffect(() => {

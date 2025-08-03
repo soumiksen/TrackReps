@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   },
   btnOutlined: {
     padding: 12,
-    backgroundColor: 'white',
+    backgroundColor: 'offwhite',
     borderWidth: 1,
     borderColor: '#199EFF',
     borderRadius: 8,

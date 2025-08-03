@@ -16,6 +16,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
+  cardSubtitles: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent:'space-between'
+  },
+  cardSubtitlesText: {
+    fontWeight: 'bold'
+  },
+  cardSubtitlesText2: {
+    color: 'grey',
+    fontWeight: 'bold'
+  },
 });
 
 export default styles;

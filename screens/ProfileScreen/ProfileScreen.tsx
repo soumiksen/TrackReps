@@ -1,15 +1,15 @@
 import Button from '@/components/Button/Button';
+import Container from '@/components/Container/Container';
 import { signOut } from '@/services/authentication';
 import React from 'react';
 import { Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ProfileScreen = () => {
   return (
-    <SafeAreaView>
-      <Text>ProfileScreen</Text>
+    <Container>
+      <Text>Profile</Text>
       <Button onPress={() => signOut()}>Sign Out</Button>
-    </SafeAreaView>
+    </Container>
   );
 };
 

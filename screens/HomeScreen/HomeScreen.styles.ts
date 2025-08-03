@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   workoutText: {
     fontSize: 36,
     fontWeight: 'bold',
+    marginTop: 10,
   },
   addButton: {
     padding: 12,
@@ -24,6 +25,14 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   textColor: { color: '#FFFFFF' },
+  btnContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+  },
+  btnWrapper: {
+    flex: 1,
+  },
 });
 
 export default styles;

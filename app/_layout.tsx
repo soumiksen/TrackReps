@@ -22,12 +22,24 @@ const RootNavigator = () => {
       <Stack.Protected guard={isAuthenticated}>
         <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
         <Stack.Screen
-          name='workout/[id]'
-          options={{ title: 'Workout Details', headerBackTitle: 'Go Back' }}
+          name='routine/[id]'
+          options={{ title: 'Routine Details', headerBackTitle: 'Go Back' }}
         />
         <Stack.Screen
-          name='workout/add'
+          name='routine/add'
+          options={{ title: 'Add Routine', headerBackTitle: 'Go Back' }}
+        />
+        <Stack.Screen
+          name='workouts/history'
+          options={{ title: 'Workouts History', headerBackTitle: 'Go Back' }}
+        />
+        <Stack.Screen
+          name='workouts/add'
           options={{ title: 'Add Workout', headerBackTitle: 'Go Back' }}
+        />
+        <Stack.Screen
+          name='workouts/[id]'
+          options={{ title: 'Workout Detail', headerBackTitle: 'Go Back' }}
         />
       </Stack.Protected>
 

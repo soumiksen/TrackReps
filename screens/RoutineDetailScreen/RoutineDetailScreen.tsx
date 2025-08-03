@@ -1,16 +1,15 @@
 import Button from '@/components/Button/Button';
-import Container from '@/components/Container/Container';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import { AuthContext } from '@/context/AuthContext';
-import { deleteRoutine } from '@/services/routine';
-import { getWorkoutDetail } from '@/services/workouts';
+import { deleteRoutine, getRoutineDetail } from '@/services/routine';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
-import styles from './WorkoutDetailScreen.styles';
+import styles from './RoutineDetailScreen.styles';
+import Container from '@/components/Container/Container';
 
-const WorkoutDetailScreen = () => {
+const RoutineDetailScreen = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [exerciseTitle, setExerciseTitle] = useState('');
   const [exerciseList, setExerciseList] = useState();
@@ -46,10 +45,11 @@ const WorkoutDetailScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getWorkoutDetail(uid, id);
+        const res = await getRoutineDetail(uid, id);
+        console.log(res);
 
-        setTitle(res?.name);
-        const formattedData: any = res?.exercises.map((item: any) => ({
+        setTitle(res.name);
+        const formattedData: any = res.exercises.map((item: any) => ({
           title: item.title,
           sets: item.sets,
           id: item.id,
@@ -64,31 +64,23 @@ const WorkoutDetailScreen = () => {
   }, [uid]);
 
   return (
-    <Container mode='tab'>
+    <Container mode="tab">
       <Text style={styles.title}>{title}</Text>
       <View style={styles.exerciseList}>
         <FlatList
           data={exerciseList}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => {
-            console.log(item.id);
-            return (
-              <ExerciseCard
-                title={item.title}
-                sets={item.sets.map((set: any) => ({
-                  ...set,
-                  reps: String(set.reps),
-                  lbs: String(set.lbs),
-                  completed: set.completed,
-                }))}
-                onEditPress={() => handleEditPress(item, index)}
-                mode='workout'
-                userID={uid}
-                exerciseID={item.id}
-                workoutID={id}
-              />
-            );
-          }}
+          renderItem={({ item, index }) => (
+            <ExerciseCard
+              title={item.title}
+              sets={item.sets.map((set) => ({
+                ...set,
+                reps: String(set.reps),
+                lbs: String(set.lbs),
+              }))}
+              onEditPress={() => handleEditPress(item, index)}
+              mode='routine'
+            />
+          )}
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
         />
       </View>
@@ -97,7 +89,6 @@ const WorkoutDetailScreen = () => {
           exerciseTitle={exerciseTitle}
           setExerciseTitle={setExerciseTitle}
           exerciseList={exerciseList}
-          setExerciseList={setExerciseList}
           sets={sets}
           setSets={setSets}
           setShowMenu={setShowMenu}
@@ -106,7 +97,6 @@ const WorkoutDetailScreen = () => {
           setEditIndex={setEditIndex}
           exerciseToEdit={exerciseToEdit}
           indexToEdit={editIndex}
-          variant='workout'
         />
       )}
       <Button
@@ -121,4 +111,4 @@ const WorkoutDetailScreen = () => {
   );
 };
 
-export default WorkoutDetailScreen;
+export default RoutineDetailScreen;

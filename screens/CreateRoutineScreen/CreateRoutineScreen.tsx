@@ -3,18 +3,16 @@ import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import Input from '@/components/Input/Input';
 import { AuthContext } from '@/context/AuthContext';
-import { addWorkout } from '@/services/workouts';
+import { addRoutine } from '@/services/routine';
 import React, { useContext, useState } from 'react';
 import { FlatList, View } from 'react-native';
-import styles from './CreateWorkoutScreen.styles';
+import styles from './CreateRoutineScreen.styles';
 
-const CreateWorkoutScreen = () => {
+const CreateRoutineScreen = () => {
   const [exerciseTitle, setExerciseTitle] = useState('');
   const [workoutTitle, setWorkoutTitle] = useState('');
   const [exerciseList, setExerciseList] = useState<any[]>([]);
-  const [sets, setSets] = useState([
-    { set: 1, reps: '', lbs: '', completed: false },
-  ]);
+  const [sets, setSets] = useState([{ set: 1, reps: '', lbs: '' }]);
   const [showMenu, setShowMenu] = useState(false);
 
   const [exerciseToEdit, setExerciseToEdit] = useState<any>(null);
@@ -63,7 +61,7 @@ const CreateWorkoutScreen = () => {
           setEditIndex={setEditIndex}
           exerciseToEdit={exerciseToEdit}
           indexToEdit={editIndex}
-          variant='workout'
+          variant='routine'
         />
       )}
 
@@ -75,7 +73,7 @@ const CreateWorkoutScreen = () => {
               title={item.title}
               sets={item.sets}
               onEditPress={() => handleEditPress(item, index)}
-              mode='workout'
+              mode='routine'
             />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
@@ -84,17 +82,17 @@ const CreateWorkoutScreen = () => {
       <View style={styles.bottomBtn}>
         <Button
           onPress={() =>
-            addWorkout(uid, {
+            addRoutine(uid, {
               name: workoutTitle,
               exercises: exerciseList,
             })
           }
         >
-          Add Workout
+          Add Routine
         </Button>
       </View>
     </View>
   );
 };
 
-export default CreateWorkoutScreen;
+export default CreateRoutineScreen;

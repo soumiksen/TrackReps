@@ -4,4 +4,5 @@ export type WorkoutCardProps = {
   volume: string;
   list: string[];
   id: string;
+  mode: 'workout' | 'routine'
 };

@@ -1,40 +1,55 @@
+// ExerciseCard.styles.ts
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-  reps: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+export default StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    borderColor: '#199EFF',
     borderWidth: 1,
-    padding: 10,
+    borderColor: '#199EFF',
     borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    backgroundColor: '#fff',
+    marginTop: 16,
   },
   exerciseDetails: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   exerciseDetailsLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
   },
   exerciseImage: {
-    height: 40,
-    width: 40,
+    width: 36,
+    height: 36,
     backgroundColor: 'red',
-    borderRadius: 20,
+    borderRadius: 18,
+    marginRight: 10,
   },
   exerciseTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  cell: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cellText: {
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
-
-export default styles;

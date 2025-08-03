@@ -1,9 +1,9 @@
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import WorkoutCard from '../WorkoutCard/WorkoutCard';
 import styles from './WorkoutSlider.styles';
 
-const CardSlider = ({ data }: any) => {
+const CardSlider = ({ data, mode }: any) => {
   return (
     <View style={styles.container}>
       <FlatList
@@ -17,10 +17,11 @@ const CardSlider = ({ data }: any) => {
         renderItem={({ item }) => (
           <WorkoutCard
             title={item.title}
-            time="1h 50m"
-            volume="1000lbs"
+            time='1h 50m'
+            volume='1000lbs'
             list={item.list}
             id={item.id}
+            mode={mode}
           />
         )}
         contentContainerStyle={styles.content}
@@ -29,6 +30,5 @@ const CardSlider = ({ data }: any) => {
     </View>
   );
 };
-
 
 export default CardSlider;

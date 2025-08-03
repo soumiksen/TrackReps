@@ -5,20 +5,29 @@ import Button from '../Button/Button';
 import styles from './WorkoutCard.styles';
 import { WorkoutCardProps } from './WorkoutCard.types';
 
-const WorkoutCard = ({ title, time, volume, list, id }: WorkoutCardProps) => {
+const WorkoutCard = ({
+  title,
+  time,
+  volume,
+  list,
+  id,
+  mode,
+}: WorkoutCardProps) => {
   const navigation = useNavigation<any>();
+
   return (
     <View style={styles.container}>
       <Text style={styles.CardHeader}>{title}</Text>
+      <View style={styles.cardSubtitles}>
+        <View>
+          <Text style={styles.cardSubtitlesText}>Time</Text>
+          <Text style={styles.cardSubtitlesText2}>{time}</Text>
+        </View>
 
-      <View>
-        <Text>Time</Text>
-        <Text>{time}</Text>
-      </View>
-
-      <View>
-        <Text>Volume</Text>
-        <Text>{volume}</Text>
+        <View>
+          <Text style={styles.cardSubtitlesText}>Volume</Text>
+          <Text style={styles.cardSubtitlesText2}>{volume}</Text>
+        </View>
       </View>
 
       <View>
@@ -28,7 +37,14 @@ const WorkoutCard = ({ title, time, volume, list, id }: WorkoutCardProps) => {
           </View>
         ))}
       </View>
-      <Button onPress={() => navigation.navigate('workout/[id]', { id })}>
+      <Button
+        onPress={() =>
+          navigation.navigate(
+            mode == 'workout' ? 'workouts/[id]' : 'routine/[id]',
+            { id }
+          )
+        }
+      >
         View Details
       </Button>
     </View>

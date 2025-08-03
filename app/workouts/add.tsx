@@ -1,8 +1,8 @@
 import CreateWorkoutScreen from '@/screens/CreateWorkoutScreen/CreateWorkoutScreen';
 import React from 'react';
 
-const AddScreen = () => {
+const Add = () => {
   return <CreateWorkoutScreen />;
 };
 
-export default AddScreen;
+export default Add;
