@@ -9,11 +9,12 @@ const Input = ({
   autoCorrect,
   onChangeText,
   inputMode = 'text',
-  onBlur
+  onBlur,
+  fullWidth = false,
 }: InputProps) => {
   return (
     <TextInput
-      style={styles.input}
+      style={fullWidth ? styles.fullWidth : styles.input}
       placeholder={placeholder}
       value={value}
       autoCorrect={autoCorrect}
