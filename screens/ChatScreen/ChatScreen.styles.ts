@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   messagesList: {
     padding: 10,
   },
-  
+
   inputContainer: {
     flexDirection: 'row',
     padding: 10,
@@ -40,7 +40,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  inlineButtonContainer: {
+    marginBottom: 10,
+    marginTop: 0,
+    alignItems: 'flex-start',
+  },
 });
 
-
-export default styles
+export default styles;

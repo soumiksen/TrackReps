@@ -4,7 +4,8 @@ import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import Input from '@/components/Input/Input';
 import { AuthContext } from '@/context/AuthContext';
 import { addRoutine } from '@/services/routine';
-import React, { useContext, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import styles from './CreateRoutineScreen.styles';
 
@@ -19,6 +20,7 @@ const CreateRoutineScreen = () => {
   const [editIndex, setEditIndex] = useState<any>(null);
 
   const { uid } = useContext(AuthContext);
+  const { hasPayload, payload } = useLocalSearchParams();
 
   const data = [
     { key: '1', value: 'Upper', disabled: true },
@@ -36,6 +38,15 @@ const CreateRoutineScreen = () => {
     setEditIndex(index);
     setShowMenu(true);
   };
+
+  useEffect(() => {
+    if (hasPayload) {
+      const parsed = JSON.parse(payload);
+      setExerciseList(parsed?.exerciseList || []);
+      setWorkoutTitle(parsed.exerciseTitle)
+      console.log(parsed.exerciseList[0].sets)
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
