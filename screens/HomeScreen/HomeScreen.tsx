@@ -1,6 +1,10 @@
 import Button from '@/components/Button/Button';
+import CircularProgress from '@/components/CircularProgressBar/CircularProgressBar';
 import Container from '@/components/Container/Container';
-import StreakCard from '@/components/StreakCard/StreakCard';
+import GradientBackground from '@/components/GradientBackground/GradientBackground';
+import Paper from '@/components/Paper/Paper';
+import VerticalProgressBar from '@/components/VerticalProgressBar/VerticalProgressBar';
+import WorkoutCard from '@/components/WorkoutCard/WorkoutCard';
 import WorkoutSlider from '@/components/WorkoutSlider/WorkoutSlider';
 import { AuthContext } from '@/context/AuthContext';
 import { getRoutines } from '@/services/routine';
@@ -44,41 +48,82 @@ const HomeScreen = () => {
   }, [uid]);
 
   return (
-    <Container>
-      <View>
-        <Text style={styles.welcomeText}>Hi {firstName}!</Text>
-        <StreakCard />
-      </View>
-      <View>
-        <View style={styles.btnContainer}>
-          <View style={styles.btnContainer}>
-            <Button
-              onPress={() => navigation.navigate('workouts/add' as never)}
-              variant='outlined'
-            >
-              New Workout
-            </Button>
-          </View>
-          <View style={styles.btnContainer}>
-            <Button onPress={() => navigation.navigate('routine/add' as never)}>
-              New Routine
-            </Button>
+    <GradientBackground>
+      <Container>
+        <View style={styles.titleContainer}>
+          <View style={styles.avatar} />
+          <View>
+            <Text style={styles.welcomeText}>Hi {firstName} 👋</Text>
+            <Text style={styles.welcomeSubText}>Wednesday, Aug 13</Text>
           </View>
         </View>
-        {workouts.length != 0 && (
-          <>
-            <Text style={styles.workoutText}>Workouts</Text>
-            <WorkoutSlider data={workouts} mode='workout' />
-          </>
-        )}
-        {routines.length != 0 && (
-          <>
-            <Text style={styles.workoutText}>Routines</Text>
-            <WorkoutSlider data={routines} mode='routine' />
-          </>
-        )}
-      </View>
-    </Container>
+        <Paper>
+          <View style={styles.weeklyStatsVertical}>
+            <VerticalProgressBar completed={60} />
+            <VerticalProgressBar completed={30} />
+            <VerticalProgressBar completed={90} />
+            <VerticalProgressBar completed={50} />
+            <VerticalProgressBar completed={70} />
+            <VerticalProgressBar completed={0} />
+            <VerticalProgressBar completed={0} />
+          </View>
+          <Button onPress={() => navigation.navigate('workouts/add' as never)}>
+            Add Workout
+          </Button>
+        </Paper>
+
+        <View style={styles.statsContainer}>
+          <View style={styles.statsContainerLeft}>
+            <Paper
+              fullWidth={true}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 16,
+              }}
+            >
+              <CircularProgress />
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ marginTop: 8 }}>42 kcal</Text>
+                <Text>Out of 2000 kcal</Text>
+              </View>
+            </Paper>
+          </View>
+          <View style={styles.statsContainerRight}>
+            <Paper fullWidth={true} style={{ gap: 24 }}>
+              <View>
+                <Text>Reps</Text>
+                <Text>Completed</Text>
+              </View>
+              <Text>43</Text>
+            </Paper>
+            <Paper fullWidth={true} style={{ gap: 24 }}>
+              <View>
+                <Text>Weights</Text>
+                <Text>Lifted</Text>
+              </View>
+              <Text>30 lbs</Text>
+            </Paper>
+          </View>
+        </View>
+
+        <View>
+          {workouts.length != 0 && (
+            <>
+              <Text style={styles.workoutText}>Workouts</Text>
+              <WorkoutCard
+                title={workouts[0]?.title}
+                time='1h 50m'
+                volume='1000lbs'
+                list={workouts[0]?.list}
+                id={workouts[0]?.id}
+                mode={"workout"}
+              />
+            </>
+          )}
+        </View>
+      </Container>
+    </GradientBackground>
   );
 };
 

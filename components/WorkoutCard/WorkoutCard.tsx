@@ -1,8 +1,7 @@
 import { useNavigation } from 'expo-router';
 import React from 'react';
-import { Text, View } from 'react-native';
-import Button from '../Button/Button';
-import styles from './WorkoutCard.styles';
+import { Text, TouchableOpacity, View } from 'react-native';
+import Paper from '../Paper/Paper';
 import { WorkoutCardProps } from './WorkoutCard.types';
 
 const WorkoutCard = ({
@@ -16,38 +15,33 @@ const WorkoutCard = ({
   const navigation = useNavigation<any>();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.CardHeader}>{title}</Text>
-      <View style={styles.cardSubtitles}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate(
+          mode == 'workout' ? 'workouts/[id]' : 'routine/[id]',
+          { id }
+        )
+      }
+      style={{ width: '100%' }}
+    >
+      <Paper style={{ flexDirection: 'row', gap: 12, alignItems: 'center', width: '100%' }}>
+        <View
+          style={{
+            width: 100,
+            height: 100,
+            backgroundColor: 'grey',
+            borderRadius: 18,
+          }}
+        />
         <View>
-          <Text style={styles.cardSubtitlesText}>Time</Text>
-          <Text style={styles.cardSubtitlesText2}>{time}</Text>
-        </View>
-
-        <View>
-          <Text style={styles.cardSubtitlesText}>Volume</Text>
-          <Text style={styles.cardSubtitlesText2}>{volume}</Text>
-        </View>
-      </View>
-
-      <View>
-        {list.map((item: any, index) => (
-          <View key={index}>
-            <Text>{item.title}</Text>
+          <Text>{title}</Text>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <Text>{time}</Text>
+            <Text>{volume}</Text>
           </View>
-        ))}
-      </View>
-      <Button
-        onPress={() =>
-          navigation.navigate(
-            mode == 'workout' ? 'workouts/[id]' : 'routine/[id]',
-            { id }
-          )
-        }
-      >
-        View Details
-      </Button>
-    </View>
+        </View>
+      </Paper>
+    </TouchableOpacity>
   );
 };
 

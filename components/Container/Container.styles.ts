@@ -3,14 +3,16 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    padding: 10
+    paddingHorizontal: 20,
+    backgroundColor: 'transparent',
   },
   inner: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   container: {
-    padding: 10
-  }
+    padding: 10,
+  },
 });
 
 export default styles;

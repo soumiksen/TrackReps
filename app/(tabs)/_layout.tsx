@@ -1,9 +1,10 @@
+import TabBar from '@/components/TabBar/TabBar';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
 const _layout = () => {
   return (
-    <Tabs>
+    <Tabs tabBar={(props) => <TabBar {...props} />}>
       <Tabs.Screen
         name='index'
         options={{

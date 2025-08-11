@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   welcomeText: {
-    fontSize: 36,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   workoutText: {
@@ -32,6 +32,41 @@ const styles = StyleSheet.create({
   },
   btnWrapper: {
     flex: 1,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: '#E7E7E7',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  welcomeSubText: {
+    color: '#292929',
+  },
+  statsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 16,
+  },
+  statsContainerLeft: {
+    flex: 1,
+  },
+  statsContainerRight: {
+    flex: 1,
+    flexDirection: 'column',
+    gap: 16,
+  },
+  weeklyStatsVertical: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
   },
 });
 

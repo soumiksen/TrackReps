@@ -3,8 +3,6 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: '#199EFF',
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
@@ -40,8 +38,6 @@ export default StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     paddingBottom: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
   },
   cell: {
     flex: 1,

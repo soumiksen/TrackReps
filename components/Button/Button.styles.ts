@@ -2,9 +2,9 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   btn: {
-    padding: 12,
-    backgroundColor: '#199EFF',
-    borderRadius: 8,
+    padding: 14,
+    backgroundColor: '#568FF8',
+    borderRadius: 16,
     alignItems: 'center',
     marginTop: 16,
   },
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: 'offwhite',
     borderWidth: 1,
-    borderColor: '#199EFF',
+    borderColor: '#568FF8',
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 16,
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   textOutlined: {
-    color: '#199EFF',
+    color: '#568FF8',
   },
 });
 
