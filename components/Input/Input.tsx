@@ -14,7 +14,7 @@ const Input = ({
 }: InputProps) => {
   return (
     <TextInput
-      style={fullWidth ? styles.fullWidth : styles.input}
+      style={[styles.input, fullWidth && styles.fullWidth]}
       placeholder={placeholder}
       value={value}
       autoCorrect={autoCorrect}

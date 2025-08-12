@@ -1,3 +1,5 @@
+import ExpandingButtonRow from '@/components/Animations/ExpandingButtonRow';
+import SlideUpCard from '@/components/Animations/SlideUpCard';
 import Button from '@/components/Button/Button';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
@@ -42,14 +44,30 @@ const CreateWorkoutScreen = () => {
   return (
     <View style={styles.container}>
       <Input
-        placeholder='Routine Title'
+        placeholder='Workout Title'
         value={workoutTitle}
         onChangeText={setWorkoutTitle}
       />
+      <ExpandingButtonRow
+        showMenu={showMenu}
+        btn1={
+          <Button
+            onPress={() => setShowMenu(true)}
+            variant={'primary'}
+          >
+            Add Exercises
+          </Button>
+        }
+        btn2={
+          <Button
+            onPress={() => console.log('Load Routine')}
+          >
+            Load Routine
+          </Button>
+        }
+      />
 
-      <Button onPress={() => setShowMenu(true)}>Add Exercises</Button>
-
-      {showMenu && (
+      <SlideUpCard visible={showMenu}>
         <EditCard
           exerciseTitle={exerciseTitle}
           setExerciseTitle={setExerciseTitle}
@@ -65,7 +83,7 @@ const CreateWorkoutScreen = () => {
           indexToEdit={editIndex}
           variant='workout'
         />
-      )}
+      </SlideUpCard>
 
       <View>
         <FlatList

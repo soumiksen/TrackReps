@@ -2,18 +2,14 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   input: {
-    padding: 10,
+    padding: 16,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    borderColor: '#568FF8',
+    borderRadius: 16,
     marginVertical: 10,
+    color: '#568FF8',
   },
   fullWidth: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginVertical: 10,
     flex: 1
   }
 })

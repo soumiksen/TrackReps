@@ -1,20 +1,36 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import styles from './Button.styles';
 import { ButtonProps } from './Button.types';
 
-const Button = ({ onPress, variant = 'primary', children }: ButtonProps) => {
+const Button = ({
+  onPress,
+  variant = 'primary',
+  children,
+  style,
+}: ButtonProps) => {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={variant == 'outlined' ? styles.btnOutlined : styles.btn}
-    >
-      <Text
-        style={variant == 'outlined' ? styles.textOutlined : styles.textColor}
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View
+        style={[
+          styles.btn,
+          style,
+          variant === 'primary' && styles.btnPrimary,
+          variant === 'secondary' && styles.btnSecondary,
+          variant === 'outlined' && styles.btnOutlined,
+        ]}
       >
-        {children}
-      </Text>
-    </TouchableOpacity>
+        <Text
+          style={[
+            variant === 'primary' && styles.textPrimary,
+            variant === 'secondary' && styles.textSecondary,
+            variant === 'outlined' && styles.textOutlined,
+          ]}
+        >
+          {children}
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
