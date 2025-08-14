@@ -40,15 +40,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'white', // or whatever background you want
+    backgroundColor: 'white',
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    maxHeight: '80%', // limits height if you want
-    elevation: 10, // for Android shadow
-    shadowColor: '#000', // for iOS shadow
+    maxHeight: '80%',
+    elevation: 10,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
+    zIndex: 1000,
   },
 });
 

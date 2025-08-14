@@ -104,10 +104,7 @@ const EditCard = ({
       <Button onPress={handleAddSet} variant='outlined'>
         Add another set
       </Button>
-
-      <Button onPress={handleAddWorkout}>
-        {mode == 'add' ? 'Add Exercise' : 'Update Exercise'}
-      </Button>
+      <Button onPress={handleAddWorkout}>Add Exercise</Button>
     </View>
   );
 };

@@ -5,7 +5,6 @@ import GradientBackground from '@/components/GradientBackground/GradientBackgrou
 import Paper from '@/components/Paper/Paper';
 import VerticalProgressBar from '@/components/VerticalProgressBar/VerticalProgressBar';
 import WorkoutCard from '@/components/WorkoutCard/WorkoutCard';
-import WorkoutSlider from '@/components/WorkoutSlider/WorkoutSlider';
 import { AuthContext } from '@/context/AuthContext';
 import { getRoutines } from '@/services/routine';
 import { getWorkouts } from '@/services/workouts';
@@ -20,6 +19,10 @@ const HomeScreen = () => {
 
   const [routines, setRoutines] = useState([]);
   const [workouts, setWorkouts] = useState([]);
+  const today = new Date();
+  const day = today.getDate();
+  const dayName = today.toLocaleString('default', { weekday: 'long' });
+  const monthName = today.toLocaleString('default', { month: 'short' });
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -54,7 +57,7 @@ const HomeScreen = () => {
           <View style={styles.avatar} />
           <View>
             <Text style={styles.welcomeText}>Hi {firstName} 👋</Text>
-            <Text style={styles.welcomeSubText}>Wednesday, Aug 13</Text>
+            <Text style={styles.welcomeSubText}>{dayName}, {monthName} {day}</Text>
           </View>
         </View>
         <Paper>
@@ -117,7 +120,7 @@ const HomeScreen = () => {
                 volume='1000lbs'
                 list={workouts[0]?.list}
                 id={workouts[0]?.id}
-                mode={"workout"}
+                mode={'workout'}
               />
             </>
           )}

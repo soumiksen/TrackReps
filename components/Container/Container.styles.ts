@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     backgroundColor: 'transparent',
+    paddingTop: 20
   },
   inner: {
     flex: 1,

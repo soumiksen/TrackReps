@@ -1,10 +1,17 @@
 import TabBar from '@/components/TabBar/TabBar';
 import { Tabs } from 'expo-router';
+
 import React from 'react';
 
 const _layout = () => {
   return (
-    <Tabs tabBar={(props) => <TabBar {...props} />}>
+    <Tabs
+      tabBar={(props) => <TabBar {...props} />}
+      screenOptions={{
+        tabBarHideOnKeyboard: true,
+      }}
+      initialRouteName='index'
+    >
       <Tabs.Screen
         name='index'
         options={{

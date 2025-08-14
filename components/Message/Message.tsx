@@ -10,7 +10,14 @@ const Message = ({ sender, text }: any) => {
         sender === 'me' ? styles.messageRight : styles.messageLeft,
       ]}
     >
-      <Text style={styles.messageText}>{text}</Text>
+      <Text
+        style={[
+          styles.messageText,
+          sender === 'me' ? styles.messageRightText : styles.messageLeftText,
+        ]}
+      >
+        {text}
+      </Text>
     </View>
   );
 };

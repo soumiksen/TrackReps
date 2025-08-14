@@ -7,7 +7,7 @@ import Input from '@/components/Input/Input';
 import { AuthContext } from '@/context/AuthContext';
 import { addWorkout } from '@/services/workouts';
 import React, { useContext, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import styles from './CreateWorkoutScreen.styles';
 
 const CreateWorkoutScreen = () => {
@@ -42,76 +42,76 @@ const CreateWorkoutScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Input
-        placeholder='Workout Title'
-        value={workoutTitle}
-        onChangeText={setWorkoutTitle}
-      />
-      <ExpandingButtonRow
-        showMenu={showMenu}
-        btn1={
-          <Button
-            onPress={() => setShowMenu(true)}
-            variant={'primary'}
-          >
-            Add Exercises
-          </Button>
-        }
-        btn2={
-          <Button
-            onPress={() => console.log('Load Routine')}
-          >
-            Load Routine
-          </Button>
-        }
-      />
-
-      <SlideUpCard visible={showMenu}>
-        <EditCard
-          exerciseTitle={exerciseTitle}
-          setExerciseTitle={setExerciseTitle}
-          exerciseList={exerciseList}
-          setExerciseList={setExerciseList}
-          sets={sets}
-          setSets={setSets}
-          setShowMenu={setShowMenu}
-          data={data}
-          mode={editIndex !== null ? 'edit' : 'add'}
-          setEditIndex={setEditIndex}
-          exerciseToEdit={exerciseToEdit}
-          indexToEdit={editIndex}
-          variant='workout'
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <Input
+          placeholder='Workout Title'
+          value={workoutTitle}
+          onChangeText={setWorkoutTitle}
         />
-      </SlideUpCard>
-
-      <View>
-        <FlatList
-          data={exerciseList}
-          renderItem={({ item, index }) => (
-            <ExerciseCard
-              title={item.title}
-              sets={item.sets}
-              onEditPress={() => handleEditPress(item, index)}
-              mode='workout'
-            />
-          )}
-          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-        />
-      </View>
-      <View style={styles.bottomBtn}>
-        <Button
-          onPress={() =>
-            addWorkout(uid, {
-              name: workoutTitle,
-              exercises: exerciseList,
-            })
+        <ExpandingButtonRow
+          showMenu={showMenu}
+          btn1={
+            <Button onPress={() => setShowMenu(true)} variant={'primary'}>
+              Add Exercises
+            </Button>
           }
-        >
-          Add Workout
-        </Button>
+          btn2={
+            <Button onPress={() => console.log('Load Routine')}>
+              Load Routine
+            </Button>
+          }
+        />
+
+        <SlideUpCard visible={showMenu}>
+          <EditCard
+            exerciseTitle={exerciseTitle}
+            setExerciseTitle={setExerciseTitle}
+            exerciseList={exerciseList}
+            setExerciseList={setExerciseList}
+            sets={sets}
+            setSets={setSets}
+            setShowMenu={setShowMenu}
+            data={data}
+            mode={'add'}
+            setEditIndex={setEditIndex}
+            exerciseToEdit={exerciseToEdit}
+            indexToEdit={editIndex}
+            variant='workout'
+          />
+        </SlideUpCard>
+
+        <View>
+          <FlatList
+            data={exerciseList}
+            renderItem={({ item, index }) => (
+              <ExerciseCard
+                title={item.title}
+                sets={item.sets}
+                onEditPress={() => handleEditPress(item, index)}
+                mode='workout'
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          />
+        </View>
+        <View style={styles.bottomBtn}>
+          <Button
+            onPress={() =>
+              addWorkout(uid, {
+                name: workoutTitle,
+                exercises: exerciseList,
+              })
+            }
+          >
+            Add Workout
+          </Button>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

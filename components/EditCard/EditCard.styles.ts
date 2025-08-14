@@ -18,11 +18,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 16,
     padding: 16,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 16,
     zIndex: 1000,
-    borderBottomColor: 'transparent',
     backgroundColor: 'white',
   },
   tableInput: {

@@ -8,15 +8,22 @@ const styles = StyleSheet.create({
   },
   messageLeft: {
     alignSelf: 'flex-start',
-    backgroundColor: '#eee',
+    backgroundColor: '#E7E7E7',
   },
   messageRight: {
     alignSelf: 'flex-end',
-    backgroundColor: '#dcf8c6',
+    backgroundColor: '#568FF8',
+    color: 'white'
   },
   messageText: {
     fontSize: 16,
   },
+  messageRightText: {
+    color: 'white'
+  },
+  messageLeftText: {
+    color: 'black'
+  }
 });
 
 export default styles

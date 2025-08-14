@@ -6,7 +6,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { addRoutine } from '@/services/routine';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import styles from './CreateRoutineScreen.styles';
 
 const CreateRoutineScreen = () => {
@@ -43,66 +43,69 @@ const CreateRoutineScreen = () => {
     if (hasPayload) {
       const parsed = JSON.parse(payload);
       setExerciseList(parsed?.exerciseList || []);
-      setWorkoutTitle(parsed.exerciseTitle)
-      console.log(parsed.exerciseList[0].sets)
+      setWorkoutTitle(parsed.exerciseTitle);
+      console.log(parsed.exerciseList[0].sets);
     }
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Input
-        placeholder='Routine Title'
-        value={workoutTitle}
-        onChangeText={setWorkoutTitle}
-      />
-
-      <Button onPress={() => setShowMenu(true)}>Add Exercises</Button>
-
-      {showMenu && (
-        <EditCard
-          exerciseTitle={exerciseTitle}
-          setExerciseTitle={setExerciseTitle}
-          exerciseList={exerciseList}
-          setExerciseList={setExerciseList}
-          sets={sets}
-          setSets={setSets}
-          setShowMenu={setShowMenu}
-          data={data}
-          mode={editIndex !== null ? 'edit' : 'add'}
-          setEditIndex={setEditIndex}
-          exerciseToEdit={exerciseToEdit}
-          indexToEdit={editIndex}
-          variant='routine'
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        {' '}
+        <Input
+          placeholder='Routine Title'
+          value={workoutTitle}
+          onChangeText={setWorkoutTitle}
         />
-      )}
-
-      <View>
-        <FlatList
-          data={exerciseList}
-          renderItem={({ item, index }) => (
-            <ExerciseCard
-              title={item.title}
-              sets={item.sets}
-              onEditPress={() => handleEditPress(item, index)}
-              mode='routine'
-            />
-          )}
-          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-        />
+        <Button onPress={() => setShowMenu(true)}>Add Exercises</Button>
+        {showMenu && (
+          <EditCard
+            exerciseTitle={exerciseTitle}
+            setExerciseTitle={setExerciseTitle}
+            exerciseList={exerciseList}
+            setExerciseList={setExerciseList}
+            sets={sets}
+            setSets={setSets}
+            setShowMenu={setShowMenu}
+            data={data}
+            mode={editIndex !== null ? 'edit' : 'add'}
+            setEditIndex={setEditIndex}
+            exerciseToEdit={exerciseToEdit}
+            indexToEdit={editIndex}
+            variant='routine'
+          />
+        )}
+        <View>
+          <FlatList
+            data={exerciseList}
+            renderItem={({ item, index }) => (
+              <ExerciseCard
+                title={item.title}
+                sets={item.sets}
+                onEditPress={() => handleEditPress(item, index)}
+                mode='routine'
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          />
+        </View>
+        <View style={styles.bottomBtn}>
+          <Button
+            onPress={() =>
+              addRoutine(uid, {
+                name: workoutTitle,
+                exercises: exerciseList,
+              })
+            }
+          >
+            Add Routine
+          </Button>
+        </View>
       </View>
-      <View style={styles.bottomBtn}>
-        <Button
-          onPress={() =>
-            addRoutine(uid, {
-              name: workoutTitle,
-              exercises: exerciseList,
-            })
-          }
-        >
-          Add Routine
-        </Button>
-      </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

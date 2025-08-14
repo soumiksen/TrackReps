@@ -3,21 +3,16 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
+    paddingHorizontal: 16,
   },
-  messagesList: {
-    padding: 10,
-  },
-
   inputContainer: {
     flexDirection: 'row',
-    padding: 10,
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#f9f9f9',
+    marginTop: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textInput: {
     flex: 1,
@@ -30,16 +25,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#fff',
   },
-  sendButton: {
-    justifyContent: 'center',
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 15,
-    borderRadius: 20,
-  },
-  sendText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+
   inlineButtonContainer: {
     marginBottom: 10,
     marginTop: 0,

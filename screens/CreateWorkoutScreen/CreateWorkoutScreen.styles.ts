@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   container: {
-    padding: 10,
+    paddingHorizontal: 10,
     display: 'flex',
     flex: 1,
   },

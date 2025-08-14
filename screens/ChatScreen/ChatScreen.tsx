@@ -4,8 +4,11 @@ import Message from '@/components/Message/Message';
 import { getGeminiMsg } from '@/services/gemini';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
+
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   FlatList,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -15,11 +18,11 @@ import styles from './ChatScreen.styles';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<any[]>([
-    { id: '1', text: 'Hi there!', sender: 'other' },
-    { id: '2', text: 'Hello! How are you?', sender: 'me' },
+    { id: '1', text: 'Hi! I am Reppy, your own AI gym assistant. How may I help you today?', sender: 'other' },
   ]);
   const [input, setInput] = useState('');
   const navigation = useNavigation();
+  const tabBarHeight = useBottomTabBarHeight();
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -78,30 +81,38 @@ const ChatScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={80}
+    <View style={{flex: 1}}>
+      <SafeAreaView
+        style={[styles.safeArea, { marginBottom: Keyboard.isVisible() ? 0 : tabBarHeight }]}
       >
-        <FlatList
-          data={messages}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.messagesList}
-        />
-
-        <View style={styles.inputContainer}>
-          <Input
-            placeholder='Type a message...'
-            value={input}
-            onChangeText={setInput}
-            fullWidth={true}
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <FlatList
+            data={messages}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={styles.messagesList}
           />
-          <Button onPress={sendMessage}>Send</Button>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+          <View style={styles.inputContainer}>
+            <Input
+              placeholder='Type a message...'
+              value={input}
+              onChangeText={setInput}
+              fullWidth={true}
+            />
+            <Button
+              style={{ marginTop: 0, marginLeft: 16 }}
+              onPress={sendMessage}
+            >
+              Send
+            </Button>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 };
 
