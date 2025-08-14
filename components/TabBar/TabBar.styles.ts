@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 100,
-    padding: 10,
+    padding: 8,
     marginHorizontal: 80,
     marginBottom: 20,
     position: 'absolute',
@@ -27,16 +27,8 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     backgroundColor: '#568FF8',
-    borderRadius: 50,
+    borderRadius: 5000,
   },
-  tabLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  activeLabel: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-})
+});
 
 export default styles;

@@ -9,6 +9,7 @@ const _layout = () => {
       tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
         tabBarHideOnKeyboard: true,
+        animation: 'shift',
       }}
       initialRouteName='index'
     >

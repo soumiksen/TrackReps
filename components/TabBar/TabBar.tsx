@@ -1,8 +1,21 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import styles from './TabBar.styles';
 
-const TabBar = ({ state, descriptors, navigation }:any) => {
+const TabBar = ({ state, descriptors, navigation }: any) => {
+  const icons: Record<string, string> = {
+    index: 'home-outline',
+    chat: 'chatbubble-outline',
+    profile: 'person-outline',
+  };
+
+  const activeIcons: Record<string, string> = {
+    index: 'home',
+    chat: 'chatbubble',
+    profile: 'person',
+  };
+
   return (
     <View style={styles.tabContainer}>
       {state.routes.map((route, index) => {
@@ -31,18 +44,20 @@ const TabBar = ({ state, descriptors, navigation }:any) => {
         return (
           <TouchableOpacity
             key={route.key}
-            accessibilityRole="button"
+            accessibilityRole='button'
             onPress={onPress}
             style={[styles.tabItem, isFocused && styles.activeTab]}
           >
-            <Text style={[styles.tabLabel, isFocused && styles.activeLabel]}>
-              {label}
-            </Text>
+            <Ionicons
+              name={isFocused ? activeIcons[route.name] : icons[route.name]}
+              size={18}
+              color={isFocused ? '#fff' : '#8e8e93'}
+            />
           </TouchableOpacity>
         );
       })}
     </View>
   );
-}
+};
 
-export default TabBar
+export default TabBar;
