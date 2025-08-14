@@ -57,18 +57,20 @@ const HomeScreen = () => {
           <View style={styles.avatar} />
           <View>
             <Text style={styles.welcomeText}>Hi {firstName} 👋</Text>
-            <Text style={styles.welcomeSubText}>{dayName}, {monthName} {day}</Text>
+            <Text style={styles.welcomeSubText}>
+              {dayName}, {monthName} {day}
+            </Text>
           </View>
         </View>
         <Paper>
           <View style={styles.weeklyStatsVertical}>
-            <VerticalProgressBar completed={60} />
-            <VerticalProgressBar completed={30} />
-            <VerticalProgressBar completed={90} />
-            <VerticalProgressBar completed={50} />
-            <VerticalProgressBar completed={70} />
-            <VerticalProgressBar completed={0} />
-            <VerticalProgressBar completed={0} />
+            <VerticalProgressBar completed={60} label='M' />
+            <VerticalProgressBar completed={30} label='T' />
+            <VerticalProgressBar completed={90} label='W' />
+            <VerticalProgressBar completed={50} label='T' active />
+            <VerticalProgressBar completed={70} label='F' />
+            <VerticalProgressBar completed={0} label='S' />
+            <VerticalProgressBar completed={0} label='S' />
           </View>
           <Button onPress={() => navigation.navigate('workouts/add' as never)}>
             Add Workout

@@ -15,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import styles from './ChatScreen.styles';
+import IconButton from '@/components/IconButton/IconButton';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<any[]>([
@@ -103,12 +104,11 @@ const ChatScreen = () => {
               onChangeText={setInput}
               fullWidth={true}
             />
-            <Button
-              style={{ marginTop: 0, marginLeft: 16 }}
+            <IconButton
+              style={{ marginTop: 0, marginLeft: 8 }}
               onPress={sendMessage}
-            >
-              Send
-            </Button>
+              name='paper-plane'
+            />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
