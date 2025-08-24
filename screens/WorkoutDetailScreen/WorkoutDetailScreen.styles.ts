@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
   },
   exerciseList: {
     display: 'flex',
-    gap: 10,
   },
 });
 

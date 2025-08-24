@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   },
   verticalProgress: {
     width: 40,
-    height: 150,
+    height: 120,
     backgroundColor: '#E7E7E7',
     borderRadius: 1000,
     position: 'relative',

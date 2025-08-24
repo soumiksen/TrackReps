@@ -1,6 +1,6 @@
 import Button from '@/components/Button/Button';
 import FormInput from '@/components/FormInput/FormInput';
-import { signIn } from '@/services/authentication';
+import { signIn } from '@/services/users';
 import { Link } from 'expo-router';
 import { Formik } from 'formik';
 import React from 'react';

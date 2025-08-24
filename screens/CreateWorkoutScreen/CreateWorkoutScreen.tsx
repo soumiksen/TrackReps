@@ -41,6 +41,30 @@ const CreateWorkoutScreen = () => {
     setShowMenu(true);
   };
 
+  const handleCreateWorkout = () => {
+    let totalReps = 0;
+    let totalWeight = 0;
+
+    exerciseList.forEach((exercise) => {
+      exercise.sets.forEach((set: any) => {
+        totalReps += parseFloat(set.reps);
+        if (set.lbs) {
+          totalWeight += parseFloat(set.lbs);
+        }
+      });
+    });
+
+    addWorkout(
+      uid,
+      {
+        name: workoutTitle,
+        exercises: exerciseList,
+      },
+      totalWeight,
+      totalReps
+    );
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -99,16 +123,7 @@ const CreateWorkoutScreen = () => {
           />
         </View>
         <View style={styles.bottomBtn}>
-          <Button
-            onPress={() =>
-              addWorkout(uid, {
-                name: workoutTitle,
-                exercises: exerciseList,
-              })
-            }
-          >
-            Add Workout
-          </Button>
+          <Button onPress={handleCreateWorkout}>Add Workout</Button>
         </View>
       </View>
     </KeyboardAvoidingView>

@@ -15,7 +15,7 @@ import styles from './HomeScreen.styles';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { firstName, uid } = useContext(AuthContext);
+  const { firstName, uid, member } = useContext(AuthContext);
 
   const [routines, setRoutines] = useState([]);
   const [workouts, setWorkouts] = useState([]);
@@ -42,6 +42,8 @@ const HomeScreen = () => {
           id: item.id,
         }));
         setWorkouts(formattedData2);
+
+        console.log({ member });
       } catch (error) {
         console.error('Failed to fetch workouts:', error);
       }
@@ -50,86 +52,109 @@ const HomeScreen = () => {
     if (uid) fetchWorkouts();
   }, [uid]);
 
-  return (
-    <GradientBackground>
-      <Container>
-        <View style={styles.titleContainer}>
-          <View style={styles.avatar} />
-          <View>
-            <Text style={styles.welcomeText}>Hi {firstName} 👋</Text>
-            <Text style={styles.welcomeSubText}>
-              {dayName}, {monthName} {day}
-            </Text>
+  if (!member) {
+    return (
+      <>
+        <Text>Loading....</Text>
+      </>
+    );
+  } else {
+    return (
+      <GradientBackground>
+        <Container>
+          <View style={styles.titleContainer}>
+            <View style={styles.avatar} />
+            <View>
+              <Text style={styles.welcomeText}>Hi {firstName} 👋</Text>
+              <Text style={styles.welcomeSubText}>
+                {dayName}, {monthName} {day}
+              </Text>
+            </View>
           </View>
-        </View>
-        <Paper>
-          <View style={styles.weeklyStatsVertical}>
-            <VerticalProgressBar completed={60} label='M' />
-            <VerticalProgressBar completed={30} label='T' />
-            <VerticalProgressBar completed={90} label='W' />
-            <VerticalProgressBar completed={50} label='T' active />
-            <VerticalProgressBar completed={70} label='F' />
-            <VerticalProgressBar completed={0} label='S' />
-            <VerticalProgressBar completed={0} label='S' />
-          </View>
-          <Button onPress={() => navigation.navigate('workouts/add' as never)}>
-            Add Workout
-          </Button>
-        </Paper>
-
-        <View style={styles.statsContainer}>
-          <View style={styles.statsContainerLeft}>
-            <Paper
-              fullWidth={true}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 16,
-              }}
+          <Paper>
+            <View style={styles.weeklyStatsVertical}>
+              <VerticalProgressBar completed={60} label='M' />
+              <VerticalProgressBar completed={30} label='T' />
+              <VerticalProgressBar completed={90} label='W' />
+              <VerticalProgressBar completed={50} label='T' />
+              <VerticalProgressBar completed={70} label='F' active />
+              <VerticalProgressBar completed={0} label='S' />
+              <VerticalProgressBar completed={0} label='S' />
+            </View>
+            <Button
+              onPress={() => navigation.navigate('workouts/add' as never)}
             >
-              <CircularProgress />
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ marginTop: 8 }}>42 kcal</Text>
-                <Text>Out of 2000 kcal</Text>
-              </View>
-            </Paper>
-          </View>
-          <View style={styles.statsContainerRight}>
-            <Paper fullWidth={true} style={{ gap: 24 }}>
-              <View>
-                <Text>Reps</Text>
-                <Text>Completed</Text>
-              </View>
-              <Text>43</Text>
-            </Paper>
-            <Paper fullWidth={true} style={{ gap: 24 }}>
-              <View>
-                <Text>Weights</Text>
-                <Text>Lifted</Text>
-              </View>
-              <Text>30 lbs</Text>
-            </Paper>
-          </View>
-        </View>
+              Add Workout
+            </Button>
+          </Paper>
 
-        <View>
-          {workouts.length != 0 && (
-            <>
-              <Text style={styles.workoutText}>Workouts</Text>
-              <WorkoutCard
-                title={workouts[0]?.title}
-                time='1h 50m'
-                volume='1000lbs'
-                list={workouts[0]?.list}
-                id={workouts[0]?.id}
-                mode={'workout'}
-              />
-            </>
-          )}
-        </View>
-      </Container>
-    </GradientBackground>
-  );
+          <View style={styles.statsContainer}>
+            <View style={styles.statsContainerLeft}>
+              <Paper
+                fullWidth={true}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 16,
+                }}
+              >
+                <CircularProgress />
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={{ marginTop: 8 }}>42 kcal</Text>
+                  <Text>Out of 2000 kcal</Text>
+                </View>
+              </Paper>
+            </View>
+            <View style={styles.statsContainerRight}>
+              <Paper fullWidth={true} style={{ gap: 24 }}>
+                <View>
+                  <Text style={styles.statsHeader}>Reps</Text>
+                  <Text style={styles.statsHeader}>Completed</Text>
+                </View>
+                <Text style={styles.statsValue}>
+                  {member?.repsCompletedInMonth ?? 0}
+                </Text>
+              </Paper>
+              <Paper fullWidth={true} style={{ gap: 24 }}>
+                <View>
+                  <Text style={styles.statsHeader}>Weights</Text>
+                  <Text style={styles.statsHeader}>Lifted</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: 2,
+                    alignItems: 'flex-end',
+                  }}
+                >
+                  <Text style={styles.statsValue}>
+                    {member?.weightLiftedInMonth}
+                  </Text>
+                  <Text style={styles.statsUnit}>lbs</Text>
+                </View>
+              </Paper>
+            </View>
+          </View>
+
+          <View>
+            {workouts.length != 0 && (
+              <>
+                <Text style={styles.workoutText}>Workouts</Text>
+                <WorkoutCard
+                  title={workouts[0]?.title}
+                  time='1h 50m'
+                  volume='1000lbs'
+                  list={workouts[0]?.list}
+                  id={workouts[0]?.id}
+                  mode={'workout'}
+                />
+              </>
+            )}
+          </View>
+        </Container>
+      </GradientBackground>
+    );
+  }
 };
 
 export default HomeScreen;

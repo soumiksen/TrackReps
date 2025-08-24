@@ -1,15 +1,37 @@
 import { db } from '@/firebaseconfig';
+import { format, startOfWeek } from 'date-fns';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  increment,
+  updateDoc,
+} from 'firebase/firestore';
 
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
-
-const addWorkout = async (memberId: string, workoutData: any) => {
+const addWorkout = async (
+  memberId: string,
+  workoutData: any,
+  totalWeights: number,
+  totalReps: number,
+  repsCount: number
+) => {
   try {
+    const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const weekStart = format(monday, 'yyyy-MM-dd');
+    const day = new Date().getDay();
+    const dayIndex = (day + 6) % 7;
+
     const workoutRef = await addDoc(
       collection(db, 'members', memberId, 'workouts'),
       {
         name: workoutData.name,
+        timestamp: new Date(),
       }
     );
+
     const exercises = workoutData.exercises;
     const exercisesCollectionRef = collection(
       db,
@@ -23,10 +45,34 @@ const addWorkout = async (memberId: string, workoutData: any) => {
     const addExercisePromises = exercises.map((exercise: object) =>
       addDoc(exercisesCollectionRef, exercise)
     );
-
     await Promise.all(addExercisePromises);
 
-    console.log('Workout and exercises added successfully.');
+    const memberRef = doc(db, 'members', memberId);
+    const memberSnap = await getDoc(memberRef);
+
+    let weeklyReps = Array(7).fill(0);
+
+    if (memberSnap.exists()) {
+      const memberData = memberSnap.data();
+      if (memberData.weeklyReps?.weekStart === weekStart) {
+        weeklyReps = memberData.weeklyReps.reps;
+      }
+    }
+
+    weeklyReps[dayIndex] += repsCount;
+
+    await updateDoc(memberRef, {
+      repsCompletedInMonth: increment(totalReps),
+      totalRepsCompleted: increment(totalReps),
+      weightLiftedInMonth: increment(totalWeights),
+      totalWeightLifted: increment(totalWeights),
+      totalWorkoutsCompleted: increment(1),
+      streak: increment(1),
+      weekStart,
+      weeklyReps: { weekStart, reps: weeklyReps }, 
+    });
+
+    console.log('Workout added and member stats updated successfully.');
   } catch (error) {
     console.error('Error adding workout: ', error);
   }
@@ -42,7 +88,14 @@ const getWorkouts = async (memberId: string) => {
         const workoutData = workoutDoc.data();
         const workoutId = workoutDoc.id;
 
-        const exercisesRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
+        const exercisesRef = collection(
+          db,
+          'members',
+          memberId,
+          'workouts',
+          workoutId,
+          'exercises'
+        );
         const exerciseSnapshots = await getDocs(exercisesRef);
 
         const exercises = exerciseSnapshots.docs.map((doc) => ({
@@ -76,7 +129,14 @@ const getWorkoutDetail = async (memberId: string, workoutId: any) => {
 
     const workoutData = workoutSnapshot.data();
 
-    const exercisesRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
+    const exercisesRef = collection(
+      db,
+      'members',
+      memberId,
+      'workouts',
+      workoutId,
+      'exercises'
+    );
     const exercisesSnapshot = await getDocs(exercisesRef);
 
     const exercises = exercisesSnapshot.docs.map((doc) => ({
@@ -97,18 +157,37 @@ const getWorkoutDetail = async (memberId: string, workoutId: any) => {
 
 const deleteWorkout = async (memberId: string, workoutId: string) => {
   try {
-    const exercisesRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
+    const exercisesRef = collection(
+      db,
+      'members',
+      memberId,
+      'workouts',
+      workoutId,
+      'exercises'
+    );
     const exercisesSnapshot = await getDocs(exercisesRef);
 
     const deleteExercisesPromises = exercisesSnapshot.docs.map((docSnap) =>
-      deleteDoc(doc(db, 'members', memberId, 'workouts', workoutId, 'exercises', docSnap.id))
+      deleteDoc(
+        doc(
+          db,
+          'members',
+          memberId,
+          'workouts',
+          workoutId,
+          'exercises',
+          docSnap.id
+        )
+      )
     );
     await Promise.all(deleteExercisesPromises);
 
     const workoutRef = doc(db, 'members', memberId, 'workouts', workoutId);
     await deleteDoc(workoutRef);
 
-    console.log(`Workout "${workoutId}" and its exercises deleted successfully.`);
+    console.log(
+      `Workout "${workoutId}" and its exercises deleted successfully.`
+    );
   } catch (error) {
     console.error('Error deleting workout:', error);
   }
@@ -150,10 +229,18 @@ const completeSet = async (
 
     await updateDoc(exerciseRef, { sets });
 
-    console.log(`Set ${setIndex + 1} marked as ${completed ? 'completed' : 'incomplete'}`);
+    console.log(
+      `Set ${setIndex + 1} marked as ${completed ? 'completed' : 'incomplete'}`
+    );
   } catch (error) {
     console.error('Error updating set completion:', error);
   }
 };
 
-export { addWorkout, getWorkouts, getWorkoutDetail, deleteWorkout, completeSet };
+export {
+  addWorkout,
+  completeSet,
+  deleteWorkout,
+  getWorkoutDetail,
+  getWorkouts,
+};

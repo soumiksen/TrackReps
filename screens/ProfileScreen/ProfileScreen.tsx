@@ -1,6 +1,6 @@
 import Button from '@/components/Button/Button';
 import Container from '@/components/Container/Container';
-import { signOut } from '@/services/authentication';
+import { signOut } from '@/services/users';
 import React from 'react';
 import { Text } from 'react-native';
 

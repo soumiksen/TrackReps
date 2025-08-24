@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
+    justifyContent: 'flex-end', // ensures input stays at the bottom
+  },
+  messagesList: {
+    flexGrow: 1,
+    justifyContent: 'flex-end', // messages start from bottom
   },
   inputContainer: {
     flexDirection: 'row',
@@ -25,10 +30,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#fff',
   },
-
   inlineButtonContainer: {
     marginBottom: 10,
-    marginTop: 0,
     alignItems: 'flex-start',
   },
 });

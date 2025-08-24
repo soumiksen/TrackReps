@@ -68,6 +68,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
+  statsHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#292929',
+  },
+  statsValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#292929',
+  },
+  statsUnit: {
+    fontSize: 16,
+    color: '#919191',
+  },
 });
 
 export default styles;
