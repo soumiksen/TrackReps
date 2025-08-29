@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   },
   messageLeft: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E7E7E7',
+    backgroundColor: 'white',
   },
   messageRight: {
     alignSelf: 'flex-end',

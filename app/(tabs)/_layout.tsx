@@ -21,6 +21,13 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
+        name='barbell'
+        options={{
+          title: 'Barbell',
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name='chat'
         options={{
           title: 'Chat',

@@ -1,37 +1,22 @@
+// ChatScreen.styles.ts
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    justifyContent: 'flex-end', // ensures input stays at the bottom
   },
   messagesList: {
     flexGrow: 1,
-    justifyContent: 'flex-end', // messages start from bottom
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
   },
   inputContainer: {
     flexDirection: 'row',
-    marginTop: 16,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textInput: {
-    flex: 1,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginRight: 10,
-    fontSize: 16,
-    backgroundColor: '#fff',
+    padding: 12,
   },
   inlineButtonContainer: {
-    marginBottom: 10,
     alignItems: 'flex-start',
   },
 });

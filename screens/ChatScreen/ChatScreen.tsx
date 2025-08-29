@@ -3,18 +3,14 @@ import Input from '@/components/Input/Input';
 import Message from '@/components/Message/Message';
 import { getGeminiMsg } from '@/services/gemini';
 import { useNavigation } from '@react-navigation/native';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  View,
-} from 'react-native';
-import styles from './ChatScreen.styles';
+import Container from '@/components/Container/Container';
+import GradientBackground from '@/components/GradientBackground/GradientBackground';
 import IconButton from '@/components/IconButton/IconButton';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
+import styles from './ChatScreen.styles';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<any[]>([
@@ -74,7 +70,7 @@ const ChatScreen = () => {
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <View style={{ marginBottom: 8 }}>
+    <View style={{marginTop: 16}}>
       <Message sender={item.sender} text={item.text} />
       {item.action && (
         <View style={styles.inlineButtonContainer}>
@@ -91,14 +87,12 @@ const ChatScreen = () => {
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      <SafeAreaView
-        style={[styles.safeArea, { marginBottom: tabBarHeight }]}
-      >
+    <GradientBackground>
+      <Container mode='chat' style={{ paddingBottom: tabBarHeight / 2 }}>
         <KeyboardAvoidingView
           style={styles.container}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // adjust as needed
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={0}
         >
           <FlatList
             ref={flatListRef}
@@ -106,25 +100,25 @@ const ChatScreen = () => {
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
             contentContainerStyle={styles.messagesList}
-            keyboardShouldPersistTaps="handled"
+            keyboardShouldPersistTaps='handled'
           />
 
           <View style={styles.inputContainer}>
             <Input
-              placeholder="Type a message..."
+              placeholder='Type a message...'
               value={input}
               onChangeText={setInput}
               fullWidth
             />
             <IconButton
-              style={{ marginTop: 0, marginLeft: 8 }}
+              style={{ marginLeft: 8 }}
               onPress={sendMessage}
-              name="paper-plane"
+              name='paper-plane'
             />
           </View>
         </KeyboardAvoidingView>
-      </SafeAreaView>
-    </View>
+      </Container>
+    </GradientBackground>
   );
 };
 

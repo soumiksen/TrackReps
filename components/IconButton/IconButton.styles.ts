@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     alignItems: 'center',
-    marginTop: 16,
   },
   btnPrimary: {
     backgroundColor: '#568FF8',

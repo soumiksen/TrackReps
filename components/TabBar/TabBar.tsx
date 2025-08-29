@@ -8,12 +8,14 @@ const TabBar = ({ state, descriptors, navigation }: any) => {
     index: 'home-outline',
     chat: 'chatbubble-outline',
     profile: 'person-outline',
+    barbell: 'barbell-outline',
   };
 
   const activeIcons: Record<string, string> = {
     index: 'home',
     chat: 'chatbubble',
     profile: 'person',
+    barbell: 'barbell',
   };
 
   return (
