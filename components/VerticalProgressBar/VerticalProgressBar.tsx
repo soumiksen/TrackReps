@@ -6,7 +6,7 @@ const VerticalProgressBar = ({ completed, label, active }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.verticalProgress}>
-        <View style={[styles.fill, { height: `${completed}%` }]} />
+        <View style={[styles.fill, { height: `${parseInt(completed)}%` }]} />
       </View>
       <Text style={[styles.label, active && styles.activeLabel]}>{label}</Text>
     </View>

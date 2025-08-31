@@ -11,19 +11,8 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 
-const addWorkout = async (
-  memberId: string,
-  workoutData: any,
-  totalWeights: number,
-  totalReps: number,
-  repsCount: number
-) => {
+const addWorkout = async (memberId: string, workoutData: any) => {
   try {
-    const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
-    const weekStart = format(monday, 'yyyy-MM-dd');
-    const day = new Date().getDay();
-    const dayIndex = (day + 6) % 7;
-
     const workoutRef = await addDoc(
       collection(db, 'members', memberId, 'workouts'),
       {
@@ -32,7 +21,6 @@ const addWorkout = async (
       }
     );
 
-    const exercises = workoutData.exercises;
     const exercisesCollectionRef = collection(
       db,
       'members',
@@ -42,41 +30,92 @@ const addWorkout = async (
       'exercises'
     );
 
-    const addExercisePromises = exercises.map((exercise: object) =>
+    const addExercisePromises = workoutData.exercises.map((exercise: object) =>
       addDoc(exercisesCollectionRef, exercise)
     );
     await Promise.all(addExercisePromises);
 
-    const memberRef = doc(db, 'members', memberId);
-    const memberSnap = await getDoc(memberRef);
-
-    let weeklyReps = Array(7).fill(0);
-
-    if (memberSnap.exists()) {
-      const memberData = memberSnap.data();
-      if (memberData.weeklyReps?.weekStart === weekStart) {
-        weeklyReps = memberData.weeklyReps.reps;
-      }
-    }
-
-    weeklyReps[dayIndex] += repsCount;
-
-    await updateDoc(memberRef, {
-      repsCompletedInMonth: increment(totalReps),
-      totalRepsCompleted: increment(totalReps),
-      weightLiftedInMonth: increment(totalWeights),
-      totalWeightLifted: increment(totalWeights),
-      totalWorkoutsCompleted: increment(1),
-      streak: increment(1),
-      weekStart,
-      weeklyReps: { weekStart, reps: weeklyReps }, 
-    });
-
-    console.log('Workout added and member stats updated successfully.');
+    console.log('Workout added successfully (stats will update when sets are completed).');
   } catch (error) {
     console.error('Error adding workout: ', error);
   }
 };
+
+const completeSet = async (
+  memberId: string,
+  workoutId: any,
+  exerciseId: any,
+  setIndex: number,
+  completed: boolean
+) => {
+  try {
+    const exerciseRef = doc(
+      db,
+      'members',
+      memberId,
+      'workouts',
+      workoutId,
+      'exercises',
+      exerciseId
+    );
+
+    const exerciseSnap = await getDoc(exerciseRef);
+    if (!exerciseSnap.exists()) throw new Error('Exercise not found');
+
+    const exerciseData = exerciseSnap.data();
+    const sets = exerciseData.sets || [];
+
+    if (setIndex < 0 || setIndex >= sets.length) {
+      throw new Error('Invalid set index');
+    }
+
+    const prevCompleted = sets[setIndex].completed || false;
+    sets[setIndex] = { ...sets[setIndex], completed };
+
+    await updateDoc(exerciseRef, { sets });
+
+    console.log(
+      `Set ${setIndex + 1} marked as ${completed ? 'completed' : 'incomplete'}`
+    );
+
+    if (!prevCompleted && completed) {
+      const reps = sets[setIndex].reps || 0;
+      const weight = sets[setIndex].weight || 0;
+
+      const day = new Date().getDay();
+      const dayIndex = (day + 6) % 7;
+      const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
+      const weekStart = format(monday, 'yyyy-MM-dd');
+
+      const memberRef = doc(db, 'members', memberId);
+      const memberSnap = await getDoc(memberRef);
+
+      let weeklyReps = Array(7).fill(0);
+      if (memberSnap.exists()) {
+        const memberData = memberSnap.data();
+        if (memberData.weeklyReps?.weekStart === weekStart) {
+          weeklyReps = memberData.weeklyReps.reps;
+        }
+      }
+
+      weeklyReps[dayIndex] += reps;
+
+      await updateDoc(memberRef, {
+        repsCompletedInMonth: increment(reps),
+        totalRepsCompleted: increment(reps),
+        weightLiftedInMonth: increment(weight * reps),
+        totalWeightLifted: increment(weight * reps),
+        weekStart,
+        weeklyReps: { weekStart, reps: weeklyReps },
+      });
+
+      console.log('Member stats updated after set completion.');
+    }
+  } catch (error) {
+    console.error('Error updating set completion:', error);
+  }
+};
+
 
 const getWorkouts = async (memberId: string) => {
   try {
@@ -193,49 +232,41 @@ const deleteWorkout = async (memberId: string, workoutId: string) => {
   }
 };
 
-const completeSet = async (
-  memberId: string,
-  workoutId: any,
-  exerciseId: any,
-  setIndex: number,
-  completed: boolean
-) => {
+const getWeeklyStats = async (memberId: string) => {
   try {
-    const exerciseRef = doc(
-      db,
-      'members',
-      memberId,
-      'workouts',
-      workoutId,
-      'exercises',
-      exerciseId
-    );
+    const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const currentWeekStart = format(monday, 'yyyy-MM-dd');
 
-    const exerciseSnap = await getDoc(exerciseRef);
-    if (!exerciseSnap.exists()) {
-      throw new Error('Exercise not found');
+    const memberRef = doc(db, 'members', memberId);
+    const memberSnap = await getDoc(memberRef);
+
+    if (!memberSnap.exists()) {
+      throw new Error('Member not found');
     }
 
-    const exerciseData = exerciseSnap.data();
-    const sets = exerciseData.sets || [];
+    const memberData = memberSnap.data();
+    let weeklyReps = Array(7).fill(0);
 
-    if (setIndex < 0 || setIndex >= sets.length) {
-      throw new Error('Invalid set index');
+    if (memberData.weeklyReps?.weekStart === currentWeekStart) {
+      weeklyReps = memberData.weeklyReps.reps || weeklyReps;
     }
-    sets[setIndex] = {
-      ...sets[setIndex],
-      completed,
+
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const statsByDay = days.map((day, i) => ({
+      day,
+      reps: weeklyReps[i],
+    }));
+
+    return {
+      weekStart: currentWeekStart,
+      statsByDay,
     };
-
-    await updateDoc(exerciseRef, { sets });
-
-    console.log(
-      `Set ${setIndex + 1} marked as ${completed ? 'completed' : 'incomplete'}`
-    );
   } catch (error) {
-    console.error('Error updating set completion:', error);
+    console.error('Error fetching weekly stats:', error);
+    return null;
   }
 };
+
 
 export {
   addWorkout,
@@ -243,4 +274,5 @@ export {
   deleteWorkout,
   getWorkoutDetail,
   getWorkouts,
+  getWeeklyStats
 };

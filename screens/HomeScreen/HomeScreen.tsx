@@ -7,7 +7,7 @@ import VerticalProgressBar from '@/components/VerticalProgressBar/VerticalProgre
 import WorkoutCard from '@/components/WorkoutCard/WorkoutCard';
 import { AuthContext } from '@/context/AuthContext';
 import { getRoutines } from '@/services/routine';
-import { getWorkouts } from '@/services/workouts';
+import { getWeeklyStats, getWorkouts } from '@/services/workouts';
 import { useNavigation } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -17,16 +17,24 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { firstName, uid, member } = useContext(AuthContext);
 
+  const [loading, setLoading] = useState(false);
   const [routines, setRoutines] = useState([]);
   const [workouts, setWorkouts] = useState([]);
+  const [weeklyStats, setWeeklyStats] = useState<any[]>([]);
+
   const today = new Date();
   const day = today.getDate();
   const dayName = today.toLocaleString('default', { weekday: 'long' });
   const monthName = today.toLocaleString('default', { month: 'short' });
 
+  const jsDay = today.getDay();
+  const dayIndex = (jsDay + 6) % 7;
+
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
+        setLoading(true);
+
         const res1 = await getRoutines(uid);
         const formattedData1: any = res1.map((item) => ({
           title: item.name,
@@ -43,7 +51,10 @@ const HomeScreen = () => {
         }));
         setWorkouts(formattedData2);
 
-        console.log({ member });
+        const res3 = await getWeeklyStats(uid);
+        setWeeklyStats(res3?.statsByDay ?? []);
+
+        setLoading(false);
       } catch (error) {
         console.error('Failed to fetch workouts:', error);
       }
@@ -52,7 +63,7 @@ const HomeScreen = () => {
     if (uid) fetchWorkouts();
   }, [uid]);
 
-  if (!member) {
+  if (loading) {
     return (
       <>
         <Text>Loading....</Text>
@@ -73,13 +84,14 @@ const HomeScreen = () => {
           </View>
           <Paper>
             <View style={styles.weeklyStatsVertical}>
-              <VerticalProgressBar completed={60} label='M' />
-              <VerticalProgressBar completed={30} label='T' />
-              <VerticalProgressBar completed={90} label='W' />
-              <VerticalProgressBar completed={50} label='T' />
-              <VerticalProgressBar completed={70} label='F' active />
-              <VerticalProgressBar completed={0} label='S' />
-              <VerticalProgressBar completed={0} label='S' />
+              {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((label, idx) => (
+                <VerticalProgressBar
+                  key={idx}
+                  completed={weeklyStats[idx]?.reps ?? 0}
+                  label={label}
+                  active={idx === dayIndex} 
+                />
+              ))}
             </View>
             <Button
               onPress={() => navigation.navigate('workouts/add' as never)}
@@ -151,7 +163,9 @@ const HomeScreen = () => {
               </>
             )}
           </View>
-          <Button onPress={() => navigation.navigate('routine/add' as never)}>Add Routine</Button>
+          <Button onPress={() => navigation.navigate('routine/add' as never)}>
+            Add Routine
+          </Button>
         </Container>
       </GradientBackground>
     );
