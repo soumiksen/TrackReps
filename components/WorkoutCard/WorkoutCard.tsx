@@ -6,7 +6,7 @@ import { WorkoutCardProps } from './WorkoutCard.types';
 
 const WorkoutCard = ({
   title,
-  time,
+  reps,
   volume,
   list,
   id,
@@ -43,8 +43,8 @@ const WorkoutCard = ({
           <View>
             <Text>{title}</Text>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <Text>{time}</Text>
-              <Text>{volume}</Text>
+              <Text>{reps}reps</Text>
+              <Text>{volume}lbs</Text>
             </View>
           </View>
         </Paper>

@@ -48,6 +48,7 @@ const HomeScreen = () => {
           title: item.name,
           list: item.exercises,
           id: item.id,
+          stats: item.stats
         }));
         setWorkouts(formattedData2);
 
@@ -154,8 +155,8 @@ const HomeScreen = () => {
                 <Text style={styles.workoutText}>Workouts</Text>
                 <WorkoutCard
                   title={workouts[0]?.title}
-                  time='1h 50m'
-                  volume='1000lbs'
+                  reps={workouts[0]?.stats?.totalReps}
+                  volume={workouts[0]?.stats?.totalWeight}
                   list={workouts[0]?.list}
                   id={workouts[0]?.id}
                   mode={'workout'}

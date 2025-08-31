@@ -8,7 +8,7 @@ import {
   getDoc,
   getDocs,
   increment,
-  updateDoc,
+  updateDoc, query, orderBy
 } from 'firebase/firestore';
 
 const addWorkout = async (memberId: string, workoutData: any) => {
@@ -35,7 +35,9 @@ const addWorkout = async (memberId: string, workoutData: any) => {
     );
     await Promise.all(addExercisePromises);
 
-    console.log('Workout added successfully (stats will update when sets are completed).');
+    console.log(
+      'Workout added successfully (stats will update when sets are completed).'
+    );
   } catch (error) {
     console.error('Error adding workout: ', error);
   }
@@ -116,12 +118,12 @@ const completeSet = async (
   }
 };
 
-
 const getWorkouts = async (memberId: string) => {
   try {
     const workoutsRef = collection(db, 'members', memberId, 'workouts');
-    const workoutSnapshots = await getDocs(workoutsRef);
-
+const q = query(workoutsRef, orderBy('timestamp', 'desc'));
+    const workoutSnapshots = await getDocs(q);
+    
     const workouts = await Promise.all(
       workoutSnapshots.docs.map(async (workoutDoc) => {
         const workoutData = workoutDoc.data();
@@ -142,10 +144,29 @@ const getWorkouts = async (memberId: string) => {
           ...doc.data(),
         }));
 
+        let totalReps = 0;
+        let totalWeight = 0;
+        exercises.forEach((exercise: any) => {
+          if (exercise.sets) {
+            exercise.sets.forEach((set: any) => {
+              console.log(set);
+              if (set.completed == true) {
+                totalReps += Number(set.reps) || 0;
+                totalWeight += Number(set.lbs) || 0;
+              }
+            });
+          }
+        });
+
         return {
           id: workoutId,
           name: workoutData.name,
+          timestamp: workoutData.timestamp,
           exercises,
+          stats: {
+            totalReps,
+            totalWeight,
+          },
         };
       })
     );
@@ -183,10 +204,28 @@ const getWorkoutDetail = async (memberId: string, workoutId: any) => {
       ...doc.data(),
     }));
 
+    let totalReps = 0;
+    let totalWeight = 0;
+    exercises.forEach((exercise: any) => {
+      if (exercise.sets) {
+        exercise.sets.forEach((set: any) => {
+          if (set.completed) {
+            totalReps += set.reps || 0;
+            totalWeight += (set.reps || 0) * (set.weight || 0);
+          }
+        });
+      }
+    });
+
     return {
       id: workoutSnapshot.id,
       name: workoutData.name,
+      timestamp: workoutData.timestamp,
       exercises,
+      stats: {
+        totalReps,
+        totalWeight,
+      },
     };
   } catch (error) {
     console.error('Error fetching workout detail:', error);
@@ -267,12 +306,11 @@ const getWeeklyStats = async (memberId: string) => {
   }
 };
 
-
 export {
   addWorkout,
   completeSet,
   deleteWorkout,
+  getWeeklyStats,
   getWorkoutDetail,
   getWorkouts,
-  getWeeklyStats
 };

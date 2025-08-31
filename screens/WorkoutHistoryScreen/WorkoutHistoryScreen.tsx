@@ -15,7 +15,7 @@ const WorkoutHistoryScreen = () => {
       try {
         const res = await getWorkouts(uid);
         setWorkouts(res);
-        console.log(res)
+        console.log(res);
       } catch (error) {
         console.error('Failed to fetch workouts:', error);
       }
@@ -25,15 +25,15 @@ const WorkoutHistoryScreen = () => {
   return (
     <GradientBackground>
       <Container>
-        <Text style={styles.title}>Workout History Screen</Text>
+        <Text style={styles.title}>Workout History</Text>
         <View>
           {workouts.length != 0 &&
             workouts.map((workout, id) => (
               <View key={id} style={{ marginBottom: 16 }}>
                 <WorkoutCard
                   title={workout?.name}
-                  time='1h 50m'
-                  volume='1000lbs'
+                  reps={workout?.stats.totalReps}
+                  volume={workout?.stats.totalWeight}
                   list={workout?.list}
                   id={workout?.id}
                   mode={'workout'}
