@@ -7,11 +7,11 @@ import Animated, {
 } from 'react-native-reanimated';
 
 const ExpandingButtonRow = ({
-  showMenu,
+  showBtn,
   btn1,
   btn2,
 }: {
-  showMenu: boolean;
+   showBtn: boolean;
   btn1: ReactNode;
   btn2: ReactNode;
 }) => {
@@ -21,18 +21,18 @@ const ExpandingButtonRow = ({
   const onLayout = (e: LayoutChangeEvent) => {
     const { width } = e.nativeEvent.layout;
     setRowWidth(width);
-    leftWidth.value = width / 2; // start at half width
+    leftWidth.value = width / 2;
   };
 
   useEffect(() => {
-    if (rowWidth === 0) return; // wait until layout measured
+    if (rowWidth === 0) return; 
 
-    if (showMenu) {
+    if (showBtn) {
       leftWidth.value = withTiming(rowWidth, { duration: 500 });
     } else {
       leftWidth.value = withTiming(rowWidth / 2 - 5, { duration: 500 }); // -5 for gap
     }
-  }, [showMenu, rowWidth]);
+  }, [showBtn, rowWidth]);
 
   const leftStyle = useAnimatedStyle(() => ({
     width: leftWidth.value,
@@ -44,11 +44,11 @@ const ExpandingButtonRow = ({
       style={{
         flexDirection: 'row',
         width: '100%',
-        gap: showMenu ? 0 : 10,
+        gap: showBtn ? 0 : 10,
       }}
     >
       <Animated.View style={leftStyle}>{btn1}</Animated.View>
-      {!showMenu && <View style={{ flex: 1 }}>{btn2}</View>}
+      {!showBtn && <View style={{ flex: 1 }}>{btn2}</View>}
     </View>
   );
 };

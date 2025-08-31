@@ -1,10 +1,12 @@
 import ExpandingButtonRow from '@/components/Animations/ExpandingButtonRow';
+import RoutineButtons from '@/components/Animations/RoutineButtons';
 import SlideUpCard from '@/components/Animations/SlideUpCard';
 import Button from '@/components/Button/Button';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import Input from '@/components/Input/Input';
 import { AuthContext } from '@/context/AuthContext';
+import { getRoutines } from '@/services/routine';
 import { addWorkout } from '@/services/workouts';
 import React, { useContext, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
@@ -18,6 +20,8 @@ const CreateWorkoutScreen = () => {
     { set: 1, reps: '', lbs: '', completed: false },
   ]);
   const [showMenu, setShowMenu] = useState(false);
+  const [showBtn, setShowBtn] = useState(false);
+  const [routines, setRoutines] = useState([]);
 
   const [exerciseToEdit, setExerciseToEdit] = useState<any>(null);
   const [editIndex, setEditIndex] = useState<any>(null);
@@ -65,6 +69,11 @@ const CreateWorkoutScreen = () => {
     );
   };
 
+  const loadRoutines = async () => {
+    const res = await getRoutines(uid);
+    setRoutines(res);
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -77,17 +86,27 @@ const CreateWorkoutScreen = () => {
           onChangeText={setWorkoutTitle}
         />
         <ExpandingButtonRow
-          showMenu={showMenu}
+          showBtn={showBtn}
           btn1={
-            <Button onPress={() => setShowMenu(true)} variant={'primary'}>
+            <Button
+              onPress={() => {
+                setShowMenu(true);
+                setShowBtn(true);
+              }}
+              variant={'primary'}
+            >
               Add Exercises
             </Button>
           }
-          btn2={
-            <Button onPress={() => console.log('Load Routine')}>
-              Load Routine
-            </Button>
-          }
+          btn2={<Button onPress={loadRoutines}>Load Routine</Button>}
+        />
+
+        <RoutineButtons
+          routines={routines}
+          setWorkoutTitle={setWorkoutTitle}
+          setExerciseList={setExerciseList}
+          setRoutines={setRoutines}
+          setShowBtn={setShowBtn}
         />
 
         <SlideUpCard visible={showMenu}>

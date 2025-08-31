@@ -151,6 +151,7 @@ const HomeScreen = () => {
               </>
             )}
           </View>
+          <Button onPress={() => navigation.navigate('routine/add' as never)}>Add Routine</Button>
         </Container>
       </GradientBackground>
     );

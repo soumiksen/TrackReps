@@ -11,6 +11,7 @@ import IconButton from '@/components/IconButton/IconButton';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import styles from './ChatScreen.styles';
+import TypingIndicator from '@/components/Animations/TypingIndicator';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<any[]>([
@@ -21,11 +22,12 @@ const ChatScreen = () => {
     },
   ]);
   const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
   const navigation = useNavigation();
   const tabBarHeight = useBottomTabBarHeight();
   const flatListRef = useRef<FlatList>(null);
 
-  // Scroll to bottom whenever messages change
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
@@ -41,8 +43,10 @@ const ChatScreen = () => {
 
     setMessages((prev) => [...prev, newMessage]);
     setInput('');
+    setIsTyping(true);
 
     const receiveMessageFromAI = await getGeminiMsg(input.trim());
+    setIsTyping(false);
 
     const newMessageAI: any = {
       id: Date.now().toString(),
@@ -72,6 +76,7 @@ const ChatScreen = () => {
   const renderItem = ({ item }: { item: any }) => (
     <View style={{marginTop: 16}}>
       <Message sender={item.sender} text={item.text} />
+
       {item.action && (
         <View style={styles.inlineButtonContainer}>
           <Button
@@ -102,7 +107,7 @@ const ChatScreen = () => {
             contentContainerStyle={styles.messagesList}
             keyboardShouldPersistTaps='handled'
           />
-
+          {isTyping && (<TypingIndicator/>)}
           <View style={styles.inputContainer}>
             <Input
               placeholder='Type a message...'
