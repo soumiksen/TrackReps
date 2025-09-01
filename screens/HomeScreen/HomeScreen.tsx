@@ -6,8 +6,8 @@ import Paper from '@/components/Paper/Paper';
 import VerticalProgressBar from '@/components/VerticalProgressBar/VerticalProgressBar';
 import WorkoutCard from '@/components/WorkoutCard/WorkoutCard';
 import { AuthContext } from '@/context/AuthContext';
-import { getRoutines } from '@/services/routine';
-import { getWeeklyStats, getWorkouts } from '@/services/workouts';
+import { WorkoutContext } from '@/context/WorkoutContext';
+import { getWeeklyStats } from '@/services/workouts';
 import { useNavigation } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -16,10 +16,9 @@ import styles from './HomeScreen.styles';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { firstName, uid, member } = useContext(AuthContext);
+  const { workouts } = useContext(WorkoutContext);
 
   const [loading, setLoading] = useState(false);
-  const [routines, setRoutines] = useState([]);
-  const [workouts, setWorkouts] = useState([]);
   const [weeklyStats, setWeeklyStats] = useState<any[]>([]);
 
   const today = new Date();
@@ -34,23 +33,6 @@ const HomeScreen = () => {
     const fetchWorkouts = async () => {
       try {
         setLoading(true);
-
-        const res1 = await getRoutines(uid);
-        const formattedData1: any = res1.map((item) => ({
-          title: item.name,
-          list: item.exercises,
-          id: item.id,
-        }));
-        setRoutines(formattedData1);
-
-        const res2 = await getWorkouts(uid);
-        const formattedData2: any = res2.map((item) => ({
-          title: item.name,
-          list: item.exercises,
-          id: item.id,
-          stats: item.stats
-        }));
-        setWorkouts(formattedData2);
 
         const res3 = await getWeeklyStats(uid);
         setWeeklyStats(res3?.statsByDay ?? []);
@@ -90,7 +72,7 @@ const HomeScreen = () => {
                   key={idx}
                   completed={weeklyStats[idx]?.reps ?? 0}
                   label={label}
-                  active={idx === dayIndex} 
+                  active={idx === dayIndex}
                 />
               ))}
             </View>
@@ -154,10 +136,9 @@ const HomeScreen = () => {
               <>
                 <Text style={styles.workoutText}>Workouts</Text>
                 <WorkoutCard
-                  title={workouts[0]?.title}
+                  title={workouts[0]?.name}
                   reps={workouts[0]?.stats?.totalReps}
                   volume={workouts[0]?.stats?.totalWeight}
-                  list={workouts[0]?.list}
                   id={workouts[0]?.id}
                   mode={'workout'}
                 />

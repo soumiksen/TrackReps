@@ -8,11 +8,14 @@ import Input from '@/components/Input/Input';
 import { AuthContext } from '@/context/AuthContext';
 import { getRoutines } from '@/services/routine';
 import { addWorkout } from '@/services/workouts';
+import { useNavigation } from 'expo-router';
 import React, { useContext, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import styles from './CreateWorkoutScreen.styles';
 
 const CreateWorkoutScreen = () => {
+  const navigation = useNavigation<any>();
+
   const [exerciseTitle, setExerciseTitle] = useState('');
   const [workoutTitle, setWorkoutTitle] = useState('');
   const [exerciseList, setExerciseList] = useState<any[]>([]);
@@ -21,7 +24,9 @@ const CreateWorkoutScreen = () => {
   ]);
   const [showMenu, setShowMenu] = useState(false);
   const [showBtn, setShowBtn] = useState(false);
-  const [routines, setRoutines] = useState([]);
+  const [routines, setRoutines] = useState<
+    { id: string; name: any; exercises: { id: string }[] }[]
+  >([]);
 
   const [exerciseToEdit, setExerciseToEdit] = useState<any>(null);
   const [editIndex, setEditIndex] = useState<any>(null);
@@ -46,27 +51,15 @@ const CreateWorkoutScreen = () => {
   };
 
   const handleCreateWorkout = () => {
-    let totalReps = 0;
-    let totalWeight = 0;
-
-    exerciseList.forEach((exercise) => {
-      exercise.sets.forEach((set: any) => {
-        totalReps += parseFloat(set.reps);
-        if (set.lbs) {
-          totalWeight += parseFloat(set.lbs);
-        }
-      });
-    });
-
-    addWorkout(
-      uid,
-      {
+    try {
+      addWorkout(uid, {
         name: workoutTitle,
         exercises: exerciseList,
-      },
-      totalWeight,
-      totalReps
-    );
+      });
+      navigation.navigate('(tabs)')
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const loadRoutines = async () => {
@@ -133,9 +126,16 @@ const CreateWorkoutScreen = () => {
             renderItem={({ item, index }) => (
               <ExerciseCard
                 title={item.title}
-                sets={item.sets}
+                sets={item.sets.map((set: any) => ({
+                  ...set,
+                  reps: String(set.reps),
+                  lbs: String(set.lbs),
+                  completed: set.completed,
+                }))}
                 onEditPress={() => handleEditPress(item, index)}
                 mode='workout'
+                userID={uid}
+                exerciseID={item.id}
               />
             )}
             ItemSeparatorComponent={() => <View style={{ height: 16 }} />}

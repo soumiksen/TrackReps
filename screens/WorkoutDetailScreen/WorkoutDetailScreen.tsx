@@ -71,7 +71,6 @@ const WorkoutDetailScreen = () => {
           data={exerciseList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
-            console.log(item.id);
             return (
               <ExerciseCard
                 title={item.title}

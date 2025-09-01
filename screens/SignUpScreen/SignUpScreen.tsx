@@ -91,6 +91,7 @@ const SignUpScreen = () => {
                 }}
                 errorType={errors.password}
                 touchedType={touched.password}
+                type='password'
               />
               <FormInput
                 placeholder='Confirm Password'
@@ -101,6 +102,7 @@ const SignUpScreen = () => {
                 }}
                 errorType={errors.confirmPassword}
                 touchedType={touched.confirmPassword}
+                type='password'
               />
               <Button onPress={handleSubmit}>Sign Up</Button>
             </View>

@@ -1,3 +1,4 @@
+import { Exercise } from '@/context/WorkoutContext';
 import { db } from '@/firebaseconfig';
 import { format, startOfWeek } from 'date-fns';
 import {
@@ -8,7 +9,8 @@ import {
   getDoc,
   getDocs,
   increment,
-  updateDoc, query, orderBy
+  updateDoc, query, orderBy,
+  onSnapshot
 } from 'firebase/firestore';
 
 const addWorkout = async (memberId: string, workoutData: any) => {
@@ -139,10 +141,15 @@ const q = query(workoutsRef, orderBy('timestamp', 'desc'));
         );
         const exerciseSnapshots = await getDocs(exercisesRef);
 
-        const exercises = exerciseSnapshots.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const exercises: Exercise[] = exerciseSnapshots.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title ?? '',
+            sets: data.sets ?? [],
+            ...data,
+          } as Exercise;
+        });
 
         let totalReps = 0;
         let totalWeight = 0;
@@ -306,6 +313,57 @@ const getWeeklyStats = async (memberId: string) => {
   }
 };
 
+const subscribeToWorkouts = (memberId: string, callback: (workouts: any[]) => void) => {
+  const workoutsRef = collection(db, 'members', memberId, 'workouts');
+  const q = query(workoutsRef, orderBy('timestamp', 'desc'));
+
+  const unsubscribe = onSnapshot(q, async (snapshot) => {
+    const workoutPromises = snapshot.docs.map(async (docSnap) => {
+      const workoutData = docSnap.data();
+      const workoutId = docSnap.id;
+
+      const exercisesRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
+      const exerciseSnapshot = await getDocs(exercisesRef);
+
+      const exercises: Exercise[] = exerciseSnapshot.docs.map((exerciseDoc) => {
+        const data = exerciseDoc.data();
+        return {
+          id: exerciseDoc.id,
+          title: data.title ?? '',
+          sets: data.sets ?? [],
+          ...data,
+        } as Exercise;
+      });
+
+      let totalReps = 0;
+      let totalWeight = 0;
+      exercises.forEach((exercise: any) => {
+        if (exercise.sets) {
+          exercise.sets.forEach((set: any) => {
+            if (set.completed === true) {
+              totalReps += Number(set.reps) || 0;
+              totalWeight += (Number(set.lbs) || 0) * (Number(set.reps) || 0);
+            }
+          });
+        }
+      });
+
+      return {
+        id: workoutId,
+        name: workoutData.name,
+        timestamp: workoutData.timestamp,
+        exercises,
+        stats: { totalReps, totalWeight },
+      };
+    });
+
+    const workouts = await Promise.all(workoutPromises);
+    callback(workouts);
+  });
+
+  return unsubscribe;
+};
+
 export {
   addWorkout,
   completeSet,
@@ -313,4 +371,5 @@ export {
   getWeeklyStats,
   getWorkoutDetail,
   getWorkouts,
+  subscribeToWorkouts
 };

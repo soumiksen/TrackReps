@@ -4,14 +4,14 @@ import { TouchableOpacity, View } from 'react-native';
 import styles from './TabBar.styles';
 
 const TabBar = ({ state, descriptors, navigation }: any) => {
-  const icons: Record<string, string> = {
+  const icons: Record<string, keyof typeof Ionicons.glyphMap> = {
     index: 'home-outline',
     chat: 'chatbubble-outline',
     profile: 'person-outline',
     barbell: 'barbell-outline',
   };
 
-  const activeIcons: Record<string, string> = {
+  const activeIcons: Record<string, keyof typeof Ionicons.glyphMap> = {
     index: 'home',
     chat: 'chatbubble',
     profile: 'person',
@@ -20,7 +20,7 @@ const TabBar = ({ state, descriptors, navigation }: any) => {
 
   return (
     <View style={styles.tabContainer}>
-      {state.routes.map((route, index) => {
+      {state.routes.map((route: any, index: any) => {
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined

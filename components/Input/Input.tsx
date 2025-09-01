@@ -11,6 +11,7 @@ const Input = ({
   inputMode = 'text',
   onBlur,
   fullWidth = false,
+  type='text',
 }: InputProps) => {
   return (
     <TextInput
@@ -21,6 +22,7 @@ const Input = ({
       onChangeText={onChangeText}
       inputMode={inputMode}
       onBlur={onBlur}
+      secureTextEntry={type == 'password' ? true : false}
     />
   );
 };

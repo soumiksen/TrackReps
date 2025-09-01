@@ -4,5 +4,6 @@ export type FormInputProps = {
   value: string;
   onBlur: () => void;
   errorType: any;
-  touchedType: any
+  touchedType: any;
+  type?: 'text' | 'password'
 }

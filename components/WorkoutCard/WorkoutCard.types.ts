@@ -1,8 +1,7 @@
 export type WorkoutCardProps = {
   title: string;
-  time: string;
+  reps: string;
   volume: string;
-  list: string[];
   id: string;
   mode: 'workout' | 'routine'
 };

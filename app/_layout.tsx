@@ -1,11 +1,14 @@
 import AuthProvider, { AuthContext } from '@/context/AuthContext';
+import WorkoutProvider from '@/context/WorkoutContext';
 import { Stack } from 'expo-router';
 import { useContext } from 'react';
 
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootNavigator />
+      <WorkoutProvider>
+        <RootNavigator />
+      </WorkoutProvider>
     </AuthProvider>
   );
 }
@@ -42,7 +45,6 @@ const RootNavigator = () => {
           options={{ title: 'Workout Detail', headerBackTitle: 'Go Back' }}
         />
       </Stack.Protected>
-
     </Stack>
   );
 };

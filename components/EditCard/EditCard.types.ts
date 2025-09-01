@@ -6,17 +6,7 @@ export type EditCardProps = {
   setShowMenu: (show: boolean) => void;
   data: { key: string; value: string }[];
   sets: { set: number; reps: string; lbs: string }[];
-  setSets: (
-    sets:
-      | { set: number; reps: string; lbs: string; completed?: boolean }[]
-      | ((
-          prev: {
-            set: number;
-            reps: string;
-            lbs: string;
-          }[]
-        ) => { set: number; reps: string; lbs: string; completed?: boolean }[])
-  ) => void;
+  setSets: any;
   mode?: 'add' | 'edit';
   exerciseToEdit?: { title: string; sets: any[] };
   indexToEdit?: number;

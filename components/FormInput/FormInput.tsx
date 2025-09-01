@@ -11,7 +11,8 @@ const FormInput = ({
   value,
   onBlur,
   errorType,
-  touchedType
+  touchedType,
+  type='text'
 }: FormInputProps) => {
   return (
     <View style={styles.container}>
@@ -20,6 +21,7 @@ const FormInput = ({
         onChangeText={onChangeText}
         value={value}
         onBlur={onBlur}
+        type={type}
       />
       {errorType && touchedType && <ErrorText>{errorType}</ErrorText>}
     </View>

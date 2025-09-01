@@ -2,26 +2,14 @@ import Container from '@/components/Container/Container';
 import GradientBackground from '@/components/GradientBackground/GradientBackground';
 import WorkoutCard from '@/components/WorkoutCard/WorkoutCard';
 import { AuthContext } from '@/context/AuthContext';
-import { getWorkouts } from '@/services/workouts';
-import React, { useContext, useEffect, useState } from 'react';
+import { WorkoutContext } from '@/context/WorkoutContext';
+import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 import styles from './WorkoutHIstoryScreen.styles';
 
 const WorkoutHistoryScreen = () => {
-  const { uid } = useContext(AuthContext);
-  const [workouts, setWorkouts] = useState([]);
-  useEffect(() => {
-    const fetchWorkouts = async () => {
-      try {
-        const res = await getWorkouts(uid);
-        setWorkouts(res);
-        console.log(res);
-      } catch (error) {
-        console.error('Failed to fetch workouts:', error);
-      }
-    };
-    if (uid) fetchWorkouts();
-  }, []);
+  const { workouts } = useContext(WorkoutContext);
+
   return (
     <GradientBackground>
       <Container>
@@ -34,7 +22,6 @@ const WorkoutHistoryScreen = () => {
                   title={workout?.name}
                   reps={workout?.stats.totalReps}
                   volume={workout?.stats.totalWeight}
-                  list={workout?.list}
                   id={workout?.id}
                   mode={'workout'}
                 />

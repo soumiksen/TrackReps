@@ -4,6 +4,6 @@ export type ExerciseCardProps = {
   onEditPress: () => void;
   mode: 'routine' | 'workout';
   exerciseID:  string[] | string;
-  workoutID: string[] | string;
+  workoutID?: string[] | string;
   userID: string;
 };

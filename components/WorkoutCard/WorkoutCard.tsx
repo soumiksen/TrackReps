@@ -8,7 +8,6 @@ const WorkoutCard = ({
   title,
   reps,
   volume,
-  list,
   id,
   mode,
 }: WorkoutCardProps) => {
