@@ -9,8 +9,10 @@ import {
   getDoc,
   getDocs,
   increment,
-  updateDoc, query, orderBy,
-  onSnapshot
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
 } from 'firebase/firestore';
 
 const addWorkout = async (memberId: string, workoutData: any) => {
@@ -82,26 +84,26 @@ const completeSet = async (
       `Set ${setIndex + 1} marked as ${completed ? 'completed' : 'incomplete'}`
     );
 
-    if (!prevCompleted && completed) {
-      const reps = sets[setIndex].reps || 0;
-      const weight = sets[setIndex].weight || 0;
+    const reps = parseInt(sets[setIndex].reps) || 0;
+    const weight = sets[setIndex].lbs || 0;
 
-      const day = new Date().getDay();
-      const dayIndex = (day + 6) % 7;
-      const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
-      const weekStart = format(monday, 'yyyy-MM-dd');
+    const day = new Date().getDay();
+    const dayIndex = (day + 6) % 7;
+    const monday = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const weekStart = format(monday, 'yyyy-MM-dd');
 
-      const memberRef = doc(db, 'members', memberId);
-      const memberSnap = await getDoc(memberRef);
+    const memberRef = doc(db, 'members', memberId);
+    const memberSnap = await getDoc(memberRef);
 
-      let weeklyReps = Array(7).fill(0);
-      if (memberSnap.exists()) {
-        const memberData = memberSnap.data();
-        if (memberData.weeklyReps?.weekStart === weekStart) {
-          weeklyReps = memberData.weeklyReps.reps;
-        }
+    let weeklyReps = Array(7).fill(0);
+    if (memberSnap.exists()) {
+      const memberData = memberSnap.data();
+      if (memberData.weeklyReps?.weekStart === weekStart) {
+        weeklyReps = memberData.weeklyReps.reps;
       }
+    }
 
+    if (!prevCompleted && completed) {
       weeklyReps[dayIndex] += reps;
 
       await updateDoc(memberRef, {
@@ -109,11 +111,22 @@ const completeSet = async (
         totalRepsCompleted: increment(reps),
         weightLiftedInMonth: increment(weight * reps),
         totalWeightLifted: increment(weight * reps),
-        weekStart,
         weeklyReps: { weekStart, reps: weeklyReps },
       });
 
       console.log('Member stats updated after set completion.');
+    } else if (prevCompleted && !completed) {
+      weeklyReps[dayIndex] = Math.max(0, weeklyReps[dayIndex] - reps); // prevent negative
+
+      await updateDoc(memberRef, {
+        repsCompletedInMonth: increment(-reps),
+        totalRepsCompleted: increment(-reps),
+        weightLiftedInMonth: increment(-(weight * reps)),
+        totalWeightLifted: increment(-(weight * reps)),
+        weeklyReps: { weekStart, reps: weeklyReps },
+      });
+
+      console.log('Member stats rolled back after set uncompletion.');
     }
   } catch (error) {
     console.error('Error updating set completion:', error);
@@ -123,9 +136,9 @@ const completeSet = async (
 const getWorkouts = async (memberId: string) => {
   try {
     const workoutsRef = collection(db, 'members', memberId, 'workouts');
-const q = query(workoutsRef, orderBy('timestamp', 'desc'));
+    const q = query(workoutsRef, orderBy('timestamp', 'desc'));
     const workoutSnapshots = await getDocs(q);
-    
+
     const workouts = await Promise.all(
       workoutSnapshots.docs.map(async (workoutDoc) => {
         const workoutData = workoutDoc.data();
@@ -313,7 +326,10 @@ const getWeeklyStats = async (memberId: string) => {
   }
 };
 
-const subscribeToWorkouts = (memberId: string, callback: (workouts: any[]) => void) => {
+const subscribeToWorkouts = (
+  memberId: string,
+  callback: (workouts: any[]) => void
+) => {
   const workoutsRef = collection(db, 'members', memberId, 'workouts');
   const q = query(workoutsRef, orderBy('timestamp', 'desc'));
 
@@ -322,7 +338,14 @@ const subscribeToWorkouts = (memberId: string, callback: (workouts: any[]) => vo
       const workoutData = docSnap.data();
       const workoutId = docSnap.id;
 
-      const exercisesRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
+      const exercisesRef = collection(
+        db,
+        'members',
+        memberId,
+        'workouts',
+        workoutId,
+        'exercises'
+      );
       const exerciseSnapshot = await getDocs(exercisesRef);
 
       const exercises: Exercise[] = exerciseSnapshot.docs.map((exerciseDoc) => {
@@ -364,6 +387,48 @@ const subscribeToWorkouts = (memberId: string, callback: (workouts: any[]) => vo
   return unsubscribe;
 };
 
+
+type WeeklyReps = {
+  weekStart: string;
+  reps: number[];
+};
+
+export type MemberStats = {
+  repsCompletedInMonth: number;
+  totalRepsCompleted: number;
+  weightLiftedInMonth: number;
+  totalWeightLifted: number;
+  weeklyReps: WeeklyReps;
+};
+
+export const subscribeToMemberStats = (
+  memberId: string,
+  callback: (stats: MemberStats | null) => void
+) => {
+  const memberRef = doc(db, 'members', memberId);
+
+  const unsubscribe = onSnapshot(memberRef, (snapshot) => {
+    if (!snapshot.exists()) {
+      callback(null);
+      return;
+    }
+
+    const data = snapshot.data();
+
+    const stats: MemberStats = {
+      repsCompletedInMonth: data.repsCompletedInMonth ?? 0,
+      totalRepsCompleted: data.totalRepsCompleted ?? 0,
+      weightLiftedInMonth: data.weightLiftedInMonth ?? 0,
+      totalWeightLifted: data.totalWeightLifted ?? 0,
+      weeklyReps: data.weeklyReps ?? { weekStart: '', reps: Array(7).fill(0) },
+    };
+
+    callback(stats);
+  });
+
+  return unsubscribe;
+};
+
 export {
   addWorkout,
   completeSet,
@@ -371,5 +436,5 @@ export {
   getWeeklyStats,
   getWorkoutDetail,
   getWorkouts,
-  subscribeToWorkouts
+  subscribeToWorkouts,
 };

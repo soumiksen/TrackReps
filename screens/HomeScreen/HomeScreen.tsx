@@ -7,7 +7,7 @@ import VerticalProgressBar from '@/components/VerticalProgressBar/VerticalProgre
 import WorkoutCard from '@/components/WorkoutCard/WorkoutCard';
 import { AuthContext } from '@/context/AuthContext';
 import { WorkoutContext } from '@/context/WorkoutContext';
-import { getWeeklyStats } from '@/services/workouts';
+import { subscribeToMemberStats } from '@/services/workouts';
 import { useNavigation } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -20,6 +20,7 @@ const HomeScreen = () => {
 
   const [loading, setLoading] = useState(false);
   const [weeklyStats, setWeeklyStats] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
 
   const today = new Date();
   const day = today.getDate();
@@ -30,20 +31,19 @@ const HomeScreen = () => {
   const dayIndex = (jsDay + 6) % 7;
 
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      try {
-        setLoading(true);
+    if (!uid) return;
 
-        const res3 = await getWeeklyStats(uid);
-        setWeeklyStats(res3?.statsByDay ?? []);
+    const unsubscribe = subscribeToMemberStats(uid, (liveStats) => {
+      if (liveStats) {
+        console.log('Live weekly reps:', liveStats?.weeklyReps.reps);
 
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to fetch workouts:', error);
+        setWeeklyStats(liveStats.weeklyReps.reps);
+        setStats(liveStats);
       }
-    };
+      setLoading(false);
+    });
 
-    if (uid) fetchWorkouts();
+    return () => unsubscribe();
   }, [uid]);
 
   if (loading) {
@@ -70,7 +70,7 @@ const HomeScreen = () => {
               {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((label, idx) => (
                 <VerticalProgressBar
                   key={idx}
-                  completed={weeklyStats[idx]?.reps ?? 0}
+                  completed={weeklyStats ? weeklyStats[idx] : 0}
                   label={label}
                   active={idx === dayIndex}
                 />
@@ -86,7 +86,7 @@ const HomeScreen = () => {
           <View style={styles.statsContainer}>
             <View style={styles.statsContainerLeft}>
               <Paper
-                fullWidth={true}
+                fullWidth
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -101,16 +101,16 @@ const HomeScreen = () => {
               </Paper>
             </View>
             <View style={styles.statsContainerRight}>
-              <Paper fullWidth={true} style={{ gap: 24 }}>
+              <Paper fullWidth style={{ gap: 24 }}>
                 <View>
                   <Text style={styles.statsHeader}>Reps</Text>
                   <Text style={styles.statsHeader}>Completed</Text>
                 </View>
                 <Text style={styles.statsValue}>
-                  {member?.repsCompletedInMonth ?? 0}
+                  {stats?.repsCompletedInMonth ?? 0}
                 </Text>
               </Paper>
-              <Paper fullWidth={true} style={{ gap: 24 }}>
+              <Paper fullWidth style={{ gap: 24 }}>
                 <View>
                   <Text style={styles.statsHeader}>Weights</Text>
                   <Text style={styles.statsHeader}>Lifted</Text>
@@ -123,7 +123,7 @@ const HomeScreen = () => {
                   }}
                 >
                   <Text style={styles.statsValue}>
-                    {member?.weightLiftedInMonth}
+                    {stats?.weightLiftedInMonth ?? 0}
                   </Text>
                   <Text style={styles.statsUnit}>lbs</Text>
                 </View>
