@@ -37,8 +37,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsAuthenticated(!!user);
       if (user) {
         setUid(user.uid);
-        setFirstName(user.displayName ? user.displayName : '');
         const memberFromDB = await getUser(user?.uid);
+        setFirstName(user.displayName || memberFromDB?.firstName || '');
         setMember(memberFromDB ?? null);
 
         setLoading(false);

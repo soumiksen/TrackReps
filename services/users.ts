@@ -28,7 +28,7 @@ const signUp = async (
     const firestoreDate = format(monday, 'yyyy-MM-dd');
 
     const u = await createUserWithEmailAndPassword(auth, email, password);
-    const updatedU = await updateProfile(u.user, { displayName: firstName });
+    await updateProfile(u.user, { displayName: firstName });
     const memberRef = await setDoc(doc(db, 'members', u.user.uid), {
       firstName,
       lastName,

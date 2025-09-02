@@ -59,6 +59,7 @@ const SignInScreen = () => {
                 }}
                 errorType={errors.password}
                 touchedType={touched.password}
+                type='password'
               />
               <Button onPress={handleSubmit}>Sign In</Button>
             </View>
