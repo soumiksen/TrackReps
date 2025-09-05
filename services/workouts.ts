@@ -47,22 +47,22 @@ const addWorkout = async (memberId: string, workoutData: any) => {
   }
 };
 
- const updateWorkout = async (
+const updateWorkout = async (
   memberId: string,
   workoutId: string,
   workoutData: any
 ) => {
   try {
-    const workoutRef = doc(db, "members", memberId, "workouts", workoutId);
+    const workoutRef = doc(db, 'members', memberId, 'workouts', workoutId);
     const workoutSnap = await getDoc(workoutRef);
-    if (!workoutSnap.exists()) throw new Error("Workout not found");
+    if (!workoutSnap.exists()) throw new Error('Workout not found');
 
     if (workoutData.name) {
       await updateDoc(workoutRef, { name: workoutData.name });
     }
 
     if (workoutData.exercises) {
-      const exercisesCollectionRef = collection(workoutRef, "exercises");
+      const exercisesCollectionRef = collection(workoutRef, 'exercises');
 
       for (const exercise of workoutData.exercises) {
         if (exercise.id) {
@@ -87,9 +87,9 @@ const addWorkout = async (memberId: string, workoutData: any) => {
       }
     }
 
-    console.log("Workout updated successfully.");
+    console.log('Workout updated successfully.');
   } catch (error) {
-    console.error("Error updating workout: ", error);
+    console.error('Error updating workout: ', error);
   }
 };
 
@@ -433,7 +433,6 @@ const subscribeToWorkouts = (
   return unsubscribe;
 };
 
-
 type WeeklyReps = {
   weekStart: string;
   reps: number[];
@@ -477,11 +476,11 @@ export const subscribeToMemberStats = (
 
 export {
   addWorkout,
-  updateWorkout,
   completeSet,
   deleteWorkout,
   getWeeklyStats,
   getWorkoutDetail,
   getWorkouts,
   subscribeToWorkouts,
+  updateWorkout,
 };

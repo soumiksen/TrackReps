@@ -3,8 +3,11 @@ import Container from '@/components/Container/Container';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import { AuthContext } from '@/context/AuthContext';
-import { deleteRoutine } from '@/services/routine';
-import { deleteWorkout, getWorkoutDetail, updateWorkout } from '@/services/workouts';
+import {
+  deleteWorkout,
+  getWorkoutDetail,
+  updateWorkout,
+} from '@/services/workouts';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
