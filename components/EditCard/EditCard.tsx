@@ -19,6 +19,7 @@ const EditCard = ({
   indexToEdit,
   setEditIndex,
   variant,
+  onSave,
 }: EditCardProps) => {
   const handleUpdateValue = (index: number, field: string, value: string) => {
     const updatedSets: any = [...sets];
@@ -27,23 +28,32 @@ const EditCard = ({
   };
 
   const handleAddWorkout = () => {
-    if (mode === 'edit' && indexToEdit !== undefined) {
-      const updatedList = [...exerciseList];
+    let updatedList: any[] = [];
+
+    if (mode === 'edit' && indexToEdit !== undefined && indexToEdit !== null) {
+      updatedList = [...exerciseList];
       updatedList[indexToEdit] = {
+        ...updatedList[indexToEdit],
         title: exerciseTitle,
         sets: sets,
       };
-      setExerciseList(updatedList);
     } else {
-      setExerciseList([
+      updatedList = [
         ...exerciseList,
         {
           title: exerciseTitle,
           sets: sets,
         },
-      ]);
+      ];
     }
-    setSets([{ set: 1, reps: '', lbs: '' }]);
+
+    setExerciseList(updatedList);
+
+    if (onSave) {
+      onSave(updatedList);
+    }
+
+    setSets([{ set: 1, reps: '', lbs: '', completed: false }]);
     setShowMenu(false);
     if (setEditIndex) {
       setEditIndex(null);
@@ -104,7 +114,9 @@ const EditCard = ({
       <Button onPress={handleAddSet} variant='outlined'>
         Add another set
       </Button>
-      <Button onPress={handleAddWorkout}>Add Exercise</Button>
+      <Button onPress={handleAddWorkout}>
+        {mode == 'add' ? 'Add Exercise' : 'Update Exercise'}
+      </Button>
     </View>
   );
 };

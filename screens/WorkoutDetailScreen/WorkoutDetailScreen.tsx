@@ -4,7 +4,7 @@ import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import { AuthContext } from '@/context/AuthContext';
 import { deleteRoutine } from '@/services/routine';
-import { getWorkoutDetail } from '@/services/workouts';
+import { deleteWorkout, getWorkoutDetail, updateWorkout } from '@/services/workouts';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
@@ -106,11 +106,17 @@ const WorkoutDetailScreen = () => {
           exerciseToEdit={exerciseToEdit}
           indexToEdit={editIndex}
           variant='workout'
+          onSave={async (updatedList) => {
+            await updateWorkout(uid, id as string, {
+              name: title,
+              exercises: updatedList,
+            });
+          }}
         />
       )}
       <Button
         onPress={async () => {
-          const res = await deleteRoutine(uid, id);
+          const res = await deleteWorkout(uid, id as string);
           navigation.navigate('(tabs)');
         }}
       >

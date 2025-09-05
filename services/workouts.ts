@@ -47,6 +47,52 @@ const addWorkout = async (memberId: string, workoutData: any) => {
   }
 };
 
+ const updateWorkout = async (
+  memberId: string,
+  workoutId: string,
+  workoutData: any
+) => {
+  try {
+    const workoutRef = doc(db, "members", memberId, "workouts", workoutId);
+    const workoutSnap = await getDoc(workoutRef);
+    if (!workoutSnap.exists()) throw new Error("Workout not found");
+
+    if (workoutData.name) {
+      await updateDoc(workoutRef, { name: workoutData.name });
+    }
+
+    if (workoutData.exercises) {
+      const exercisesCollectionRef = collection(workoutRef, "exercises");
+
+      for (const exercise of workoutData.exercises) {
+        if (exercise.id) {
+          const exerciseRef = doc(exercisesCollectionRef, exercise.id);
+          await updateDoc(exerciseRef, {
+            title: exercise.title,
+            sets: exercise.sets,
+          });
+        } else {
+          await addDoc(exercisesCollectionRef, {
+            title: exercise.title,
+            sets: exercise.sets,
+          });
+        }
+      }
+
+      if (workoutData.removeExerciseIds) {
+        for (const exId of workoutData.removeExerciseIds) {
+          const exRef = doc(exercisesCollectionRef, exId);
+          await deleteDoc(exRef);
+        }
+      }
+    }
+
+    console.log("Workout updated successfully.");
+  } catch (error) {
+    console.error("Error updating workout: ", error);
+  }
+};
+
 const completeSet = async (
   memberId: string,
   workoutId: any,
@@ -431,6 +477,7 @@ export const subscribeToMemberStats = (
 
 export {
   addWorkout,
+  updateWorkout,
   completeSet,
   deleteWorkout,
   getWeeklyStats,

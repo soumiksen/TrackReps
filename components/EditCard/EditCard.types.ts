@@ -12,4 +12,5 @@ export type EditCardProps = {
   indexToEdit?: number;
   setEditIndex?: (index: number | null) => void;
   variant: 'workout' | 'routine';
+  onSave?: (updatedList: any[]) => void;
 };

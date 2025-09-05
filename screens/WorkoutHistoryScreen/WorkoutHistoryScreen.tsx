@@ -1,7 +1,6 @@
 import Container from '@/components/Container/Container';
 import GradientBackground from '@/components/GradientBackground/GradientBackground';
 import WorkoutCard from '@/components/WorkoutCard/WorkoutCard';
-import { AuthContext } from '@/context/AuthContext';
 import { WorkoutContext } from '@/context/WorkoutContext';
 import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
@@ -15,7 +14,9 @@ const WorkoutHistoryScreen = () => {
       <Container>
         <Text style={styles.title}>Workout History</Text>
         <View>
-          {workouts.length != 0 &&
+          {workouts.length == 0 ? (
+            <Text>No Workouts</Text>
+          ) : (
             workouts.map((workout, id) => (
               <View key={id} style={{ marginBottom: 16 }}>
                 <WorkoutCard
@@ -26,7 +27,8 @@ const WorkoutHistoryScreen = () => {
                   mode={'workout'}
                 />
               </View>
-            ))}
+            ))
+          )}
         </View>
       </Container>
     </GradientBackground>
