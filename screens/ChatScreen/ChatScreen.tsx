@@ -5,13 +5,14 @@ import { getGeminiMsg } from '@/services/gemini';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 
+import TypingIndicator from '@/components/Animations/TypingIndicator';
 import Container from '@/components/Container/Container';
 import GradientBackground from '@/components/GradientBackground/GradientBackground';
 import IconButton from '@/components/IconButton/IconButton';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from './ChatScreen.styles';
-import TypingIndicator from '@/components/Animations/TypingIndicator';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<any[]>([
@@ -26,6 +27,7 @@ const ChatScreen = () => {
 
   const navigation = useNavigation();
   const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
@@ -74,7 +76,7 @@ const ChatScreen = () => {
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <View style={{marginTop: 16}}>
+    <View style={{ marginTop: 16 }}>
       <Message sender={item.sender} text={item.text} />
 
       {item.action && (
@@ -93,11 +95,17 @@ const ChatScreen = () => {
 
   return (
     <GradientBackground>
-      <Container mode='chat' style={{ paddingBottom: tabBarHeight / 2 }}>
+      <Container
+        mode='chat'
+        style={{
+          paddingBottom:
+            Platform.OS === 'ios' ? tabBarHeight / 2 : tabBarHeight,
+        }}
+      >
         <KeyboardAvoidingView
           style={styles.container}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          keyboardVerticalOffset={0}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'android' ? 16 : 0}
         >
           <FlatList
             ref={flatListRef}
@@ -107,7 +115,7 @@ const ChatScreen = () => {
             contentContainerStyle={styles.messagesList}
             keyboardShouldPersistTaps='handled'
           />
-          {isTyping && (<TypingIndicator/>)}
+          {isTyping && <TypingIndicator />}
           <View style={styles.inputContainer}>
             <Input
               placeholder='Type a message...'

@@ -21,7 +21,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     zIndex: 1000,
     backgroundColor: 'white',
+    shadowColor: '#919191',
+    shadowOffset: { width: 0, height: -4 }, 
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 20, 
   },
+
   tableInput: {
     flexDirection: 'row',
     alignItems: 'center',
