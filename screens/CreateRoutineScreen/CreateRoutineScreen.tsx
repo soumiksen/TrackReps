@@ -4,12 +4,14 @@ import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import Input from '@/components/Input/Input';
 import { AuthContext } from '@/context/AuthContext';
 import { addRoutine } from '@/services/routine';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import styles from './CreateRoutineScreen.styles';
 
 const CreateRoutineScreen = () => {
+  const navigation = useNavigation<any>();
+
   const [exerciseTitle, setExerciseTitle] = useState('');
   const [workoutTitle, setWorkoutTitle] = useState('');
   const [exerciseList, setExerciseList] = useState<any[]>([]);
@@ -30,6 +32,13 @@ const CreateRoutineScreen = () => {
     setShowMenu(true);
   };
 
+  const handleCreateRoutine = () => {
+    addRoutine(uid, {
+      name: workoutTitle,
+      exercises: exerciseList,
+    });
+    navigation.navigate('(tabs)');
+  };
   useEffect(() => {
     if (hasPayload) {
       const parsed = JSON.parse(payload as string);
@@ -90,16 +99,7 @@ const CreateRoutineScreen = () => {
           />
         </View>
         <View style={styles.bottomBtn}>
-          <Button
-            onPress={() =>
-              addRoutine(uid, {
-                name: workoutTitle,
-                exercises: exerciseList,
-              })
-            }
-          >
-            Add Routine
-          </Button>
+          <Button onPress={handleCreateRoutine}>Add Routine</Button>
         </View>
       </View>
     </KeyboardAvoidingView>

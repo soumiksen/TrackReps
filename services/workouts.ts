@@ -59,7 +59,6 @@ const updateWorkout = async (memberId: string, workoutId: string, data: {
   const exercisesCollectionRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
   const batch = writeBatch(db);
 
-  // Add/update exercises
   for (const exercise of data.exercises) {
     if (exercise.id) {
       batch.update(doc(exercisesCollectionRef, exercise.id), exercise);
@@ -68,7 +67,6 @@ const updateWorkout = async (memberId: string, workoutId: string, data: {
     }
   }
 
-  // Delete exercises
   if (data.removeExerciseIds?.length) {
     for (const exId of data.removeExerciseIds) {
       batch.delete(doc(exercisesCollectionRef, exId));

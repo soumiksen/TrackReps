@@ -33,6 +33,14 @@ const RootNavigator = () => {
           options={{ title: 'Add Routine', headerBackTitle: 'Go Back' }}
         />
         <Stack.Screen
+          name='routine/edit'
+          options={{ title: 'Edit Routine', headerBackTitle: 'Go Back' }}
+        />
+        <Stack.Screen
+          name='routine/list'
+          options={{ title: 'Routines List', headerBackTitle: 'Go Back' }}
+        />
+        <Stack.Screen
           name='workouts/history'
           options={{ title: 'Workouts History', headerBackTitle: 'Go Back' }}
         />

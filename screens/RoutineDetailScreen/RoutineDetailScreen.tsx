@@ -3,7 +3,7 @@ import Container from '@/components/Container/Container';
 import EditCard from '@/components/EditCard/EditCard';
 import ExerciseCard from '@/components/ExerciseCard/ExerciseCard';
 import { AuthContext } from '@/context/AuthContext';
-import { deleteRoutine, getRoutineDetail } from '@/services/routine';
+import { deleteRoutine, getRoutineDetail, updateExercise } from '@/services/routine';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
@@ -92,10 +92,16 @@ const RoutineDetailScreen = () => {
           indexToEdit={editIndex}
           variant='routine'
           onSave={async (updatedList) => {
-            console.log(1);
+            await updateExercise(uid, id as string, {
+              name: title,
+              exercises: updatedList,
+            });
           }}
         />
       )}
+      <Button onPress={() => navigation.navigate('routine/edit', { id })}>
+        Edit Routine
+      </Button>
       <Button
         onPress={async () => {
           const res = await deleteRoutine(uid, id);

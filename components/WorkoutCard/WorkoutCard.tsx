@@ -4,13 +4,7 @@ import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import Paper from '../Paper/Paper';
 import { WorkoutCardProps } from './WorkoutCard.types';
 
-const WorkoutCard = ({
-  title,
-  reps,
-  volume,
-  id,
-  mode,
-}: WorkoutCardProps) => {
+const WorkoutCard = ({ title, reps, volume, id, mode }: WorkoutCardProps) => {
   const navigation = useNavigation<any>();
 
   return (
@@ -41,10 +35,12 @@ const WorkoutCard = ({
           />
           <View>
             <Text>{title}</Text>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              <Text>{reps}reps</Text>
-              <Text>{volume}lbs</Text>
-            </View>
+            {mode == 'workout' && (
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <Text>{reps}reps</Text>
+                <Text>{volume}lbs</Text>
+              </View>
+            )}
           </View>
         </Paper>
       </View>

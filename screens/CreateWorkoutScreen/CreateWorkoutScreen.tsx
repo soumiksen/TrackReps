@@ -44,7 +44,7 @@ const CreateWorkoutScreen = () => {
   const handleCreateWorkout = () => {
     const today = new Date();
     const options = { month: 'short', day: 'numeric', year: 'numeric' };
-    const formattedDate = today.toLocaleDateString('en-US', options);
+    const formattedDate = today.toLocaleDateString('en-US', options as any);
 
     try {
       addWorkout(uid, {
