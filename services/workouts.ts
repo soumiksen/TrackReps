@@ -13,6 +13,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
 
 const addWorkout = async (memberId: string, workoutData: any) => {
@@ -47,7 +48,38 @@ const addWorkout = async (memberId: string, workoutData: any) => {
   }
 };
 
-const updateWorkout = async (
+const updateWorkout = async (memberId: string, workoutId: string, data: {
+  name: string;
+  exercises: any[];
+  removeExerciseIds?: string[];
+}) => {
+  const workoutRef = doc(db, 'members', memberId, 'workouts', workoutId);
+  await updateDoc(workoutRef, { name: data.name });
+
+  const exercisesCollectionRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
+  const batch = writeBatch(db);
+
+  // Add/update exercises
+  for (const exercise of data.exercises) {
+    if (exercise.id) {
+      batch.update(doc(exercisesCollectionRef, exercise.id), exercise);
+    } else {
+      batch.set(doc(exercisesCollectionRef), exercise);
+    }
+  }
+
+  // Delete exercises
+  if (data.removeExerciseIds?.length) {
+    for (const exId of data.removeExerciseIds) {
+      batch.delete(doc(exercisesCollectionRef, exId));
+    }
+  }
+
+  await batch.commit();
+};
+
+
+const updateExercise = async (
   memberId: string,
   workoutId: string,
   workoutData: any
@@ -482,5 +514,6 @@ export {
   getWorkoutDetail,
   getWorkouts,
   subscribeToWorkouts,
-  updateWorkout,
+  updateExercise,
+  updateWorkout
 };

@@ -4,6 +4,7 @@ import { FlatList, Text, TextInput, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import styles from './EditCard.styles';
 import { EditCardProps } from './EditCard.types';
+import WorkoutData from '@/data/workouts-data';
 
 const EditCard = ({
   exerciseTitle,
@@ -11,7 +12,6 @@ const EditCard = ({
   setExerciseList,
   exerciseList,
   setShowMenu,
-  data,
   sets,
   setSets,
   mode = 'add',
@@ -103,7 +103,7 @@ const EditCard = ({
     <View style={styles.menu}>
       <SelectList
         setSelected={setExerciseTitle}
-        data={data}
+        data={WorkoutData}
         save='value'
         placeholder='Select Exercise'
         defaultOption={{ key: 'custom', value: exerciseTitle }}

@@ -33,15 +33,6 @@ const CreateWorkoutScreen = () => {
 
   const { uid } = useContext(AuthContext);
 
-  const data = [
-    { key: '1', value: 'Upper', disabled: true },
-    { key: '2', value: 'Bicep Curl' },
-    { key: '3', value: 'Hammer Curl' },
-    { key: '4', value: 'Lower', disabled: true },
-    { key: '5', value: 'Leg Extension' },
-    { key: '6', value: 'Calf Extension' },
-  ];
-
   const handleEditPress = (exercise: any, index: any) => {
     setExerciseTitle(exercise.title);
     setSets(exercise.sets);
@@ -51,12 +42,16 @@ const CreateWorkoutScreen = () => {
   };
 
   const handleCreateWorkout = () => {
+    const today = new Date();
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    const formattedDate = today.toLocaleDateString('en-US', options);
+
     try {
       addWorkout(uid, {
-        name: workoutTitle,
+        name: workoutTitle == '' ? formattedDate : workoutTitle,
         exercises: exerciseList,
       });
-      navigation.navigate('(tabs)')
+      navigation.navigate('(tabs)');
     } catch (error) {
       console.log(error);
     }
@@ -111,7 +106,6 @@ const CreateWorkoutScreen = () => {
             sets={sets}
             setSets={setSets}
             setShowMenu={setShowMenu}
-            data={data}
             mode={'add'}
             setEditIndex={setEditIndex}
             exerciseToEdit={exerciseToEdit}

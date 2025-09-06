@@ -4,7 +4,6 @@ export type EditCardProps = {
   setExerciseList: any;
   exerciseList: any;
   setShowMenu: (show: boolean) => void;
-  data: { key: string; value: string }[];
   sets: { set: number; reps: string; lbs: string }[];
   setSets: any;
   mode?: 'add' | 'edit';

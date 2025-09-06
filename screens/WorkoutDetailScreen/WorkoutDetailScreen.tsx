@@ -6,7 +6,7 @@ import { AuthContext } from '@/context/AuthContext';
 import {
   deleteWorkout,
   getWorkoutDetail,
-  updateWorkout,
+  updateExercise,
 } from '@/services/workouts';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
@@ -36,15 +36,6 @@ const WorkoutDetailScreen = () => {
     setSets(exercise.sets);
     setShowMenu(true);
   };
-
-  const data = [
-    { key: '1', value: 'Upper', disabled: true },
-    { key: '2', value: 'Bicep Curl' },
-    { key: '3', value: 'Hammer Curl' },
-    { key: '4', value: 'Lower', disabled: true },
-    { key: '5', value: 'Leg Extension' },
-    { key: '6', value: 'Calf Extension' },
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,27 +94,30 @@ const WorkoutDetailScreen = () => {
           sets={sets}
           setSets={setSets}
           setShowMenu={setShowMenu}
-          data={data}
           mode={editIndex !== null ? 'edit' : 'add'}
           setEditIndex={setEditIndex}
           exerciseToEdit={exerciseToEdit}
           indexToEdit={editIndex}
           variant='workout'
           onSave={async (updatedList) => {
-            await updateWorkout(uid, id as string, {
+            await updateExercise(uid, id as string, {
               name: title,
               exercises: updatedList,
             });
           }}
         />
       )}
+      <Button onPress={() => navigation.navigate('workouts/edit', { id })}>
+        Edit Workout
+      </Button>
+
       <Button
         onPress={async () => {
           const res = await deleteWorkout(uid, id as string);
           navigation.navigate('(tabs)');
         }}
       >
-        Delete Routine
+        Delete Workout
       </Button>
     </Container>
   );

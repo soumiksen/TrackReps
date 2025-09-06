@@ -41,6 +41,10 @@ const RootNavigator = () => {
           options={{ title: 'Add Workout', headerBackTitle: 'Go Back' }}
         />
         <Stack.Screen
+          name='workouts/edit'
+          options={{ title: 'Edit Workout', headerBackTitle: 'Go Back' }}
+        />
+        <Stack.Screen
           name='workouts/[id]'
           options={{ title: 'Workout Detail', headerBackTitle: 'Go Back' }}
         />

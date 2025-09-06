@@ -22,15 +22,6 @@ const CreateRoutineScreen = () => {
   const { uid } = useContext(AuthContext);
   const { hasPayload, payload } = useLocalSearchParams();
 
-  const data = [
-    { key: '1', value: 'Upper', disabled: true },
-    { key: '2', value: 'Bicep Curl' },
-    { key: '3', value: 'Hammer Curl' },
-    { key: '4', value: 'Lower', disabled: true },
-    { key: '5', value: 'Leg Extension' },
-    { key: '6', value: 'Calf Extension' },
-  ];
-
   const handleEditPress = (exercise: any, index: any) => {
     setExerciseTitle(exercise.title);
     setSets(exercise.sets);
@@ -41,7 +32,7 @@ const CreateRoutineScreen = () => {
 
   useEffect(() => {
     if (hasPayload) {
-      const parsed = JSON.parse(payload);
+      const parsed = JSON.parse(payload as string);
       setExerciseList(parsed?.exerciseList || []);
       setWorkoutTitle(parsed.exerciseTitle);
       console.log(parsed.exerciseList[0].sets);
@@ -70,7 +61,6 @@ const CreateRoutineScreen = () => {
             sets={sets}
             setSets={setSets}
             setShowMenu={setShowMenu}
-            data={data}
             mode={editIndex !== null ? 'edit' : 'add'}
             setEditIndex={setEditIndex}
             exerciseToEdit={exerciseToEdit}
@@ -84,9 +74,16 @@ const CreateRoutineScreen = () => {
             renderItem={({ item, index }) => (
               <ExerciseCard
                 title={item.title}
-                sets={item.sets}
+                sets={item.sets.map((set: any) => ({
+                  ...set,
+                  reps: String(set.reps),
+                  lbs: String(set.lbs),
+                  completed: set.completed,
+                }))}
                 onEditPress={() => handleEditPress(item, index)}
                 mode='routine'
+                userID={uid}
+                exerciseID={item.id}
               />
             )}
             ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
