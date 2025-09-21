@@ -17,12 +17,14 @@ import {
 } from 'firebase/firestore';
 
 const addWorkout = async (memberId: string, workoutData: any) => {
+  console.log("From addWorkout:", workoutData.duration);
   try {
     const workoutRef = await addDoc(
       collection(db, 'members', memberId, 'workouts'),
       {
         name: workoutData.name,
         timestamp: new Date(),
+        duration: workoutData.duration || 0,
       }
     );
 
@@ -48,34 +50,55 @@ const addWorkout = async (memberId: string, workoutData: any) => {
   }
 };
 
-const updateWorkout = async (memberId: string, workoutId: string, data: {
-  name: string;
-  exercises: any[];
-  removeExerciseIds?: string[];
-}) => {
+const updateWorkout = async (
+  memberId: string,
+  workoutId: string,
+  data: {
+    name?: string;
+    duration?: number;
+    exercises?: any[];
+    removeExerciseIds?: string[];
+  }
+) => {
+  console.log("from updateWorkout:", data.duration);
   const workoutRef = doc(db, 'members', memberId, 'workouts', workoutId);
-  await updateDoc(workoutRef, { name: data.name });
 
-  const exercisesCollectionRef = collection(db, 'members', memberId, 'workouts', workoutId, 'exercises');
-  const batch = writeBatch(db);
+  const updateFields: any = {};
+  if (data.name !== undefined) updateFields.name = data.name;
+  if (data.duration !== undefined) updateFields.duration = data.duration;
 
-  for (const exercise of data.exercises) {
-    if (exercise.id) {
-      batch.update(doc(exercisesCollectionRef, exercise.id), exercise);
-    } else {
-      batch.set(doc(exercisesCollectionRef), exercise);
-    }
+  if (Object.keys(updateFields).length > 0) {
+    await updateDoc(workoutRef, updateFields);
   }
 
-  if (data.removeExerciseIds?.length) {
-    for (const exId of data.removeExerciseIds) {
-      batch.delete(doc(exercisesCollectionRef, exId));
-    }
-  }
+  if (data.exercises) {
+    const exercisesCollectionRef = collection(
+      db,
+      'members',
+      memberId,
+      'workouts',
+      workoutId,
+      'exercises'
+    );
+    const batch = writeBatch(db);
 
-  await batch.commit();
+    for (const exercise of data.exercises) {
+      if (exercise.id) {
+        batch.update(doc(exercisesCollectionRef, exercise.id), exercise);
+      } else {
+        batch.set(doc(exercisesCollectionRef), exercise);
+      }
+    }
+
+    if (data.removeExerciseIds?.length) {
+      for (const exId of data.removeExerciseIds) {
+        batch.delete(doc(exercisesCollectionRef, exId));
+      }
+    }
+
+    await batch.commit();
+  }
 };
-
 
 const updateExercise = async (
   memberId: string,
@@ -87,8 +110,13 @@ const updateExercise = async (
     const workoutSnap = await getDoc(workoutRef);
     if (!workoutSnap.exists()) throw new Error('Workout not found');
 
-    if (workoutData.name) {
-      await updateDoc(workoutRef, { name: workoutData.name });
+    const updateFields: any = {};
+    if (workoutData.name) updateFields.name = workoutData.name;
+    if (workoutData.duration !== undefined)
+      updateFields.duration = workoutData.duration;
+
+    if (Object.keys(updateFields).length > 0) {
+      await updateDoc(workoutRef, updateFields);
     }
 
     if (workoutData.exercises) {
@@ -258,6 +286,7 @@ const getWorkouts = async (memberId: string) => {
           id: workoutId,
           name: workoutData.name,
           timestamp: workoutData.timestamp,
+          duration: workoutData.duration || 0,
           exercises,
           stats: {
             totalReps,
@@ -317,6 +346,7 @@ const getWorkoutDetail = async (memberId: string, workoutId: any) => {
       id: workoutSnapshot.id,
       name: workoutData.name,
       timestamp: workoutData.timestamp,
+      duration: workoutData.duration || 0, 
       exercises,
       stats: {
         totalReps,
@@ -451,6 +481,7 @@ const subscribeToWorkouts = (
         id: workoutId,
         name: workoutData.name,
         timestamp: workoutData.timestamp,
+        duration: workoutData.duration || 0, 
         exercises,
         stats: { totalReps, totalWeight },
       };
@@ -461,6 +492,15 @@ const subscribeToWorkouts = (
   });
 
   return unsubscribe;
+};
+
+export const formatDuration = (durationInSeconds: number): string => {
+  const minutes = Math.floor(durationInSeconds / 60);
+  const seconds = durationInSeconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
+    2,
+    '0'
+  )}`;
 };
 
 type WeeklyReps = {
@@ -513,5 +553,5 @@ export {
   getWorkouts,
   subscribeToWorkouts,
   updateExercise,
-  updateWorkout
+  updateWorkout,
 };

@@ -4,8 +4,23 @@ import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import Paper from '../Paper/Paper';
 import { WorkoutCardProps } from './WorkoutCard.types';
 
-const WorkoutCard = ({ title, reps, volume, id, mode }: WorkoutCardProps) => {
+const WorkoutCard = ({ title, reps, volume, id, mode, duration }: WorkoutCardProps) => {
   const navigation = useNavigation<any>();
+
+  const formatDuration = (durationInSeconds: number): string => {
+    if (!durationInSeconds || durationInSeconds === 0) return '0min';
+    
+    const totalMinutes = Math.floor(durationInSeconds / 60);
+    const remainingSeconds = durationInSeconds % 60;
+    
+    if (totalMinutes === 0) {
+      return '1min';
+    } else if (remainingSeconds === 0) {
+      return `${totalMinutes}min`;
+    } else {
+      return `${totalMinutes}min`;
+    }
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -37,8 +52,9 @@ const WorkoutCard = ({ title, reps, volume, id, mode }: WorkoutCardProps) => {
             <Text>{title}</Text>
             {mode == 'workout' && (
               <View style={{ flexDirection: 'row', gap: 8 }}>
-                <Text>{reps}reps</Text>
-                <Text>{volume}lbs</Text>
+                <Text>{reps} reps</Text>
+                <Text>{volume} lbs</Text>
+                <Text>{formatDuration(parseInt(duration) || 0)}</Text>
               </View>
             )}
           </View>

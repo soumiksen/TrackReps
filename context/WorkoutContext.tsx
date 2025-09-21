@@ -29,6 +29,7 @@ interface Workout {
     totalReps: any;
     totalWeight: any;
   };
+  duration: any;
 }
 
 type WorkoutContextType = {

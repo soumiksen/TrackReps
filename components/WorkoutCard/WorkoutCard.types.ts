@@ -3,5 +3,6 @@ export type WorkoutCardProps = {
   reps?: string;
   volume?: string;
   id: string;
-  mode: 'workout' | 'routine'
+  mode: 'workout' | 'routine';
+  duration: string;
 };

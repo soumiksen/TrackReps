@@ -1,9 +1,15 @@
-export type ExerciseCardProps = {
+export interface ExerciseCardProps {
   title: string;
-  sets: { set: number; reps: string; lbs: string, completed?: boolean }[];
+  sets: Array<{
+    set?: number;
+    reps: string | number;
+    lbs: string | number;
+    completed: boolean;
+  }>;
   onEditPress: () => void;
-  mode: 'routine' | 'workout';
-  exerciseID:  string[] | string;
-  workoutID?: string[] | string;
+  exerciseID: string;
+  workoutID?: string; // Made optional since it might not exist during seamless creation
   userID: string;
-};
+  mode: 'workout' | 'routine' | string;
+  onSetComplete?: (setIndex: number, completed: boolean) => void; // New optional prop
+}

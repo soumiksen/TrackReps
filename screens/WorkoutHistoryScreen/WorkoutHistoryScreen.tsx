@@ -25,6 +25,7 @@ const WorkoutHistoryScreen = () => {
                   volume={workout?.stats.totalWeight}
                   id={workout?.id}
                   mode={'workout'}
+                  duration={workout?.duration}
                 />
               </View>
             ))

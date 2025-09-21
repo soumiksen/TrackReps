@@ -14,19 +14,37 @@ const ExerciseCard = ({
   workoutID,
   userID,
   mode,
+  onSetComplete, // New prop for handling set completion in parent
 }: ExerciseCardProps) => {
   const [sets, setSets] = useState(initialSets);
+  
   useEffect(() => {
     setSets(initialSets);
   }, [initialSets]);
 
-  const toggleComplete = (setIndex: number, c?: boolean) => {
+  const toggleComplete = (setIndex: number, currentCompleted?: boolean) => {
+    const newCompleted = !currentCompleted;
+    
+    // Update local state immediately for UI responsiveness
     const newSets = sets.map((set, idx) =>
-      idx === setIndex ? { ...set, completed: !c } : set
+      idx === setIndex ? { ...set, completed: newCompleted } : set
     );
     setSets(newSets);
 
-    completeSet(userID, workoutID, exerciseID, setIndex, !c);
+    // If onSetComplete prop is provided (for seamless workout creation), use it
+    if (onSetComplete) {
+      onSetComplete(setIndex, newCompleted);
+    } 
+    // Otherwise, use the traditional Firebase call (for existing workouts)
+    else if (workoutID) {
+      completeSet(userID, workoutID, exerciseID, setIndex, newCompleted);
+    }
+    // If no workoutID and no onSetComplete, it means workout hasn't been created yet
+    else {
+      console.log('Workout not created yet, cannot complete set');
+      // Revert local state since we can't save to Firebase
+      setSets(initialSets);
+    }
   };
 
   const isWorkoutMode = mode === 'workout';

@@ -35,8 +35,6 @@ const HomeScreen = () => {
 
     const unsubscribe = subscribeToMemberStats(uid, (liveStats) => {
       if (liveStats) {
-        console.log('Live weekly reps:', liveStats?.weeklyReps.reps);
-
         setWeeklyStats(liveStats.weeklyReps.reps);
         setStats(liveStats);
       }
@@ -141,6 +139,7 @@ const HomeScreen = () => {
                   volume={workouts[0]?.stats?.totalWeight}
                   id={workouts[0]?.id}
                   mode={'workout'}
+                  duration={workouts[0]?.duration}
                 />
               </>
             )}
