@@ -74,12 +74,10 @@ const HomeScreen = () => {
                 />
               ))}
             </View>
-            <Button
-              onPress={() => navigation.navigate('workouts/add' as never)}
-            >
-              Add Workout
-            </Button>
           </Paper>
+          <Button onPress={() => navigation.navigate('workouts/add' as never)}>
+            Add Workout
+          </Button>
 
           <View style={styles.statsContainer}>
             <View style={styles.statsContainerLeft}>
